@@ -2,39 +2,44 @@
 
 namespace App\Models;
 
+use App\Base\Interfaces\HasQuiz;
+use App\Base\Interfaces\HasQuizzes;
+use App\Base\Interfaces\HasUser;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CourseLearningPath extends Model
+class UserQuiz extends Model implements HasQuiz, HasUser
 {
     use HasFactory, HasUuids;
     public $incrementing = false;
     public $keyType = 'char';
+    protected $table = 'user_quizzes';
     protected $primaryKey = 'id';
-    protected $table = 'course_learning_paths';
     protected $fillable = [
-        'course_id',
-        'learning_path_id',
-        'step'
+        'user_id',
+        'quiz_id',
+        'module_question_id',
+        'answer',
+        'score',
     ];
     /**
-     * Get the course that owns the CourseLearningPath
+     * Get the user that owns the UserQuiz
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function course(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(User::class);
     }
     /**
-     * Get the learningPath that owns the CourseLearningPath
+     * Get the quiz that owns the UserQuiz
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function learningPath(): BelongsTo
+    public function quiz(): BelongsTo
     {
-        return $this->belongsTo(LearningPath::class);
+        return $this->belongsTo(Quiz::class);
     }
 }

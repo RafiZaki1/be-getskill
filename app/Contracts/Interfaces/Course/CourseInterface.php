@@ -42,7 +42,7 @@ interface CourseInterface extends CustomPaginationInterface, StoreInterface, Upd
      *
      * @return mixed
      */
-    public function getTop(): mixed;
+    public function getTop(): mixed;    
     /**
      * Method getSome
      *
