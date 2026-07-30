@@ -221,6 +221,8 @@ class CourseController extends Controller
             $course = $this->course->update($course->id, ['is_ready' => true]);
 
             return ResponseHelper::success($course, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('ready to use course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
