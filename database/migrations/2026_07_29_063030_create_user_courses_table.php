@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('user_courses', function (Blueprint $table) {
             $table->id();
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('course_id')->constrained('courses')->cascadeOnDelete();
+            $table->foreignUuid('sub_module_id')->nullable()->constrained('sub_modules')->nullOnDelete();
+            $table->boolean('has_pre_test')->default(false);
+            $table->boolean('has_post_test')->default(false);
+            $table->boolean('has_downloaded')->default(false);
             $table->timestamps();
         });
     }

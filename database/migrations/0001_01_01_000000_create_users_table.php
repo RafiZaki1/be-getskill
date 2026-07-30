@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->integer('point')->default(0);
             $table->string('phone_number')->nullable();
             $table->enum('gender', [GenderEnum::FEMALE->value, GenderEnum::MALE->value]);
             $table->text('address')->nullable();
@@ -24,6 +25,8 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->text('banner')->nullable();
+            $table->softDeletes();
         });
     }
 
@@ -33,7 +36,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };

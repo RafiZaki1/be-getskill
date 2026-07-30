@@ -20,7 +20,9 @@ return new class extends Migration
             $table->foreignUuid('teacher_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignUuid('user_id')->nullable()->constrained()->onDelete('set null');
             $table->string('name');
+            $table->string('slug');
             $table->enum('class_level', array_map(fn($enum) => $enum->value, ClassEnum::cases()));
+            $table->integer('price')->nullable();
             $table->timestamps();
         });
     }
