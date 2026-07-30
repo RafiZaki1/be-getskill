@@ -86,5 +86,10 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production' || config('app.env') === 'development') {
             URL::forceScheme('https');
         }
+
+        \App\Models\Course::observe(\App\Observers\CourseObserver::class);
+        \App\Models\CourseReview::observe(\App\Observers\CourseReviewObserver::class);
+        \App\Models\Module::observe(\App\Observers\ModuleObserver::class);
+        \App\Models\SubModule::observe(\App\Observers\SubModuleObserver::class);
     }
 }

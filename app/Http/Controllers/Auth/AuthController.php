@@ -81,12 +81,10 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            return response()->json([
-                'message' => 'Login successful',
-                'access_token' => $token,
-                'token_type' => 'Bearer',
+            return \App\Helpers\ResponseHelper::success([
                 'user' => $user,
-            ]);
+                'token' => $token,
+            ], 'Berhasil login');
         }
 
         return response()->json([
