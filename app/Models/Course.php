@@ -109,22 +109,4 @@ class Course extends Model implements HasSubCategory, HasModules, HasUserCourses
         return $this->hasMany(CourseTest::class);
     }
 
-    /**
-     * Get all of the transaction for the Course
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function transactions(): HasMany
-    {
-        return $this->hasMany(Transaction::class);
-    }
-    /**
-     * Get all of the courseLearningPaths for the Course
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function courseLearningPaths(): HasMany
-    {
-        return $this->hasMany(CourseLearningPath::class);
-    }
 }

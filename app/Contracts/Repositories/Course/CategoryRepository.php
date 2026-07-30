@@ -36,7 +36,7 @@ class CategoryRepository extends BaseRepository implements CategoryInterface
             $query->where('name', 'LIKE', '%' . $request->name . '%');
         })
         ->with('subCategories')
-        ->fastPaginate($pagination);
+        ->paginate($pagination);
     }
 
     /**

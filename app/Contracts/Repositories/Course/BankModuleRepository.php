@@ -35,7 +35,7 @@ class BankModuleRepository extends BaseRepository implements BankModuleInterface
             ->when($request->class_level, fn($q, $v) => $q->where('class_level', $v))
             ->when($request->semester, fn($q, $v) => $q->where('semester', $v))
             ->latest()
-            ->fastPaginate($pagination);
+            ->paginate($pagination);
     }
 
     public function store(array $data): BankModule
