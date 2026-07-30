@@ -37,7 +37,7 @@ class ModuleRepository extends BaseRepository implements ModuleInterface
             })->when($request->course_id, function ($query) use ($request) {
             $query->where('course_id', $request->course_id);
         })
-            ->fastPaginate($pagination);
+            ->paginate($pagination);
     }
     /**
      * Method store
@@ -250,16 +250,7 @@ class ModuleRepository extends BaseRepository implements ModuleInterface
         return $this->model->query()->where('step', $step)->where('course_id', $course_id)->firstOrFail();
     }
 
-    /**
-     * whereDevision
-     *
-     * @param  mixed $step
-     * @return mixed
-     */
-    public function whereDivision(mixed $division_id): mixed
-    {
-        return $this->model->query()->whereRelation('course.courseLearningPaths.learningPath', 'division_id', $division_id)->get();
-    }
+
 
     public function getTaskClearByModuleAndUser(mixed $module_id, mixed $user_id)
     {
