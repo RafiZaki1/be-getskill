@@ -24,7 +24,6 @@ return new class extends Migration
             $table->integer('price')->default(0)->nullable();
             $table->boolean('is_ready')->default(0);
             $table->timestamps();
-            $table->integer('price')->nullable();
         });
     }
 

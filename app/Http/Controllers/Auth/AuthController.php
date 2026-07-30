@@ -67,7 +67,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
@@ -78,12 +78,14 @@ class AuthController extends Controller
             return response()->json(['message' => 'Please verify your email before logging in.'], 403);
         }
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+        if ($user && Hash::check($request->password, $user->password)) {
+            $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json([
                 'message' => 'Login successful',
-                'user' => Auth::user(),
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user,
             ]);
         }
 
@@ -94,10 +96,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
             'message' => 'Logged out successfully'
