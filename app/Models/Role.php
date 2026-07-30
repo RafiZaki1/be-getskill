@@ -4,28 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Permission\Models\Role as SpatieRole;
 
-class Role extends Model
+class Role extends SpatieRole
 {
-    use HasFactory, HasUuids;
-
-    public $incrementing = false;
-    public $keyType = 'char';
-
-    protected $table = 'roles';
-
-    protected $fillable = [
-        'name',
-        'guard_name',
-    ];
-
-    /**
-     * Get all of the modelHasRoles for the Role
-     */
-    public function modelHasRoles(): HasMany
-    {
-        return $this->hasMany(ModelHasRole::class);
-    }
+    use HasFactory;
+    use HasUuids;
+    protected $primaryKey = 'uuid';
 }
