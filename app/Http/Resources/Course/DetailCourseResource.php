@@ -34,13 +34,7 @@ class DetailCourseResource extends JsonResource
             1 => $this->courseReviews->where('rating', 1)->count(),
         ]);
 
-        $result = $this->courseLearningPaths()
-            ->whereHas('learningPath.division.classrooms.studentClassrooms.student.user', function ($query) use ($user) {
-                if ($user) {
-                    $query->where('id', $user?->id);
-                }
-            })
-            ->exists();
+        $result = false;
 
         $ratingsPercentage = $ratingsCount->mapWithKeys(function ($count, $rating) use ($totalReviews) {
             return [$rating => $totalReviews > 0 ? round(($count / $totalReviews) * 100, 2) : 0];

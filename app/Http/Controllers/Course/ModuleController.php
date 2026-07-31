@@ -59,6 +59,8 @@ class ModuleController extends Controller
             $request->merge(['course_id' => $course->id]);
             $modules = $this->module->search($request);
             return ResponseHelper::success(ModuleResource::collection($modules), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -77,6 +79,8 @@ class ModuleController extends Controller
             $request->merge(['course_id' => $course->id]);
             $modules = $this->module->search($request);
             return ResponseHelper::success(ModuleListResource::collection($modules), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -95,6 +99,8 @@ class ModuleController extends Controller
             $data = ['course_id' => $course->id];
             $modules = $this->module->search(new Request($data));
             return ResponseHelper::success(ModuleNoDetailResource::collection($modules), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -117,6 +123,8 @@ class ModuleController extends Controller
             $this->module->store($data);
     
             return ResponseHelper::success(true, trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
@@ -134,6 +142,8 @@ class ModuleController extends Controller
         try {
             $module = $this->module->show($module->id);
             return ResponseHelper::success(new ModuleResource($module));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans(null, trans('alert.fetch_failed') . '. ' . $th->getMessage()));
         }
@@ -151,6 +161,8 @@ class ModuleController extends Controller
         try {
             $module = $this->module->showWithSlug($slug);
             return ResponseHelper::success(new ModuleSidebarResource($module));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -169,6 +181,8 @@ class ModuleController extends Controller
         try {
             $this->module->update($module->id, $request->validated());
             return ResponseHelper::success(true, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
@@ -260,6 +274,8 @@ class ModuleController extends Controller
             });
     
             return ResponseHelper::success(ModuleSidebarResource::collection($modules));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -276,6 +292,8 @@ class ModuleController extends Controller
                 return $this->module->search($request);
             });
             return ResponseHelper::success(CourseModuleListResource::collection($modules));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::success(null, trans('alert.fetch_failed'));
         }
@@ -293,6 +311,8 @@ class ModuleController extends Controller
             $request->merge(['course_id' => $module->course_id]);
             $modules = $this->module->search($request);
             return ResponseHelper::success(ModuleSidebarResource::collection($modules));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -312,6 +332,8 @@ class ModuleController extends Controller
 
             DB::commit();
             return ResponseHelper::success(null, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             DB::rollBack();
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
@@ -334,6 +356,8 @@ class ModuleController extends Controller
                 CourseModuleSimpleResource::collection($modules),
                 trans('alert.fetch_success')
             );
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }

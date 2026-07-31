@@ -49,6 +49,8 @@ class UserCourseController extends Controller
             $data['paginate'] = $this->customPaginate($userCourses->currentPage(), $userCourses->lastPage());
             $data['data'] = UserCourseResource::collection($userCourses);
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -68,6 +70,8 @@ class UserCourseController extends Controller
             $data['paginate'] = $this->customPaginate($userCourses->currentPage(), $userCourses->lastPage());
             $data['data'] = UserCourseResource::collection($userCourses);
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -90,6 +94,8 @@ class UserCourseController extends Controller
             $data['data'] = UserCourseResource::collection($userCourses);
     
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -110,6 +116,8 @@ class UserCourseController extends Controller
             $data['paginate'] = $this->customPaginate($userCourses->currentPage(), $userCourses->lastPage());
             $data['data'] = UserCourseResource::collection($userCourses);
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -129,6 +137,8 @@ class UserCourseController extends Controller
             
             $this->service->userLastStep($course, $subModule);
             return ResponseHelper::success($userCourse, 'Berhasil masuk materi');
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -154,6 +164,8 @@ class UserCourseController extends Controller
                 'sub_module_id' => $course->modules()->orderBy('step', 'asc')->first()->subModules()->orderBy('step', 'asc')->first()->id
             ]);
             return ResponseHelper::success(UserCourseResource::make($userCourse), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error($th->getMessage());
         }
@@ -200,6 +212,8 @@ class UserCourseController extends Controller
             }
 
             return ResponseHelper::success(null, 'Successfully removed pre-test information');
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error($th->getMessage());
         }
@@ -223,6 +237,8 @@ class UserCourseController extends Controller
             } else {
                 return ResponseHelper::error(null, trans('alert.fetch_failed'), 404);
             }
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }

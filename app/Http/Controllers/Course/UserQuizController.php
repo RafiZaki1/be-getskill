@@ -62,6 +62,8 @@ class UserQuizController extends Controller
                 'user_quizzes' => $userQuizzes,
             ];
             return ResponseHelper::success(new UserQuizCourseStatusResource($data), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }        
@@ -79,6 +81,8 @@ class UserQuizController extends Controller
         $module = $this->module->showWithSlug($slug);
         $userQuizzes = $this->userQuiz->getWhere(['module_id' => $module->id]);
         return ResponseHelper::success(UserQuizResultResource::collection($userQuizzes), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -96,6 +100,8 @@ class UserQuizController extends Controller
         try {
         $this->userQuiz->store($data);
         return ResponseHelper::success(true, trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }

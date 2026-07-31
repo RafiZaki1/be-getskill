@@ -48,6 +48,8 @@ class SubmissionTaskController extends Controller
         try {
             $submissionTasks = $this->submissionTask->getWhereSearch(['module_task_id' => $moduleTask->id], $request);
             return ResponseHelper::success(SubmissionTaskResource::collection($submissionTasks), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -63,6 +65,8 @@ class SubmissionTaskController extends Controller
     {
         try {
             return ResponseHelper::success(ShowSubmissionTaskResource::make($submissionTask), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -138,6 +142,8 @@ class SubmissionTaskController extends Controller
         try {
             $this->submissionTask->update($submissionTask->id, $request->validated());
             return ResponseHelper::success(true, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
@@ -154,6 +160,8 @@ class SubmissionTaskController extends Controller
         try {
             $this->submissionTask->delete($submissionTask->id);
             return ResponseHelper::success(true, trans('alert.delete_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans(null, trans('alert.delete_failed') . '. ' . $th->getMessage()));
         }
@@ -204,6 +212,8 @@ class SubmissionTaskController extends Controller
             }
 
             return ResponseHelper::success(true, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }

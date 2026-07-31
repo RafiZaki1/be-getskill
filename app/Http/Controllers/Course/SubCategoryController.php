@@ -39,6 +39,8 @@ class SubCategoryController extends Controller
         try {
             $subCategories = $this->subCategory->get();
             return ResponseHelper::success(SubCategoryResource::collection($subCategories), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -57,6 +59,8 @@ class SubCategoryController extends Controller
             $data['category_id'] = $category->id;
             $this->subCategory->store($data);
             return ResponseHelper::success(true, trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
@@ -75,6 +79,8 @@ class SubCategoryController extends Controller
         try {
             $this->subCategory->update($subCategory->id, $request->validated());
             return ResponseHelper::success(true, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
@@ -107,6 +113,8 @@ class SubCategoryController extends Controller
         try {
             $subCategories = $this->subCategory->getByCategory($category->id);
             return ResponseHelper::success(SubCategoryResource::collection($subCategories));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }

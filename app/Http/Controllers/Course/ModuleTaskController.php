@@ -56,6 +56,8 @@ class ModuleTaskController extends Controller
         try {
             $moduleTasks = $this->moduleTask->getWhere(['module_id' => $module->id]);
             return ResponseHelper::success(ModuleTaskResource::collection($moduleTasks), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('index course ModuleTask error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -78,6 +80,8 @@ class ModuleTaskController extends Controller
             $this->moduleTask->store($data);
 
             return ResponseHelper::success(true, trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('store course ModuleTask error: ' . $th->getMessage());
             return ResponseHelper::error(null, 'Terjadi kesalahan saat menyimpan tugas. ' . $th->getMessage());
@@ -101,6 +105,8 @@ class ModuleTaskController extends Controller
                 ModuleTaskResource::make($moduleTask),
                 trans('alert.fetch_success')
             );
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('show course ModuleTask error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -119,6 +125,8 @@ class ModuleTaskController extends Controller
         try {
             $moduleTask = $this->moduleTask->show($moduleTask->id);
             return ResponseHelper::success(ModuleTaskAnswerResource::make($moduleTask), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('showWithAnswer course ModuleTask error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -158,6 +166,8 @@ class ModuleTaskController extends Controller
             $this->moduleTask->update($moduleTask->id, $data);
 
             return ResponseHelper::success($moduleTask->module->id, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('update course ModuleTask error: ' . $th->getMessage());
             return ResponseHelper::error(null, 'Terjadi kesalahan saat memperbarui tugas. ' . $th->getMessage());
@@ -185,6 +195,8 @@ class ModuleTaskController extends Controller
         try {
             $moduleTask = $this->moduleTask->getByCourse($slug);
             return ResponseHelper::success(ModuleTaskResource::collection($moduleTask), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('getByCourse course ModuleTask error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -205,6 +217,8 @@ class ModuleTaskController extends Controller
             }
 
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('getByCourseWithPaginate course ModuleTask error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());

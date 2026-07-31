@@ -46,6 +46,8 @@ class CourseVoucherController extends Controller
             $course = $this->course->showWithSlug($request, $courseSlug);
             $courseVouchers = $this->courseVoucher->getWhere(['course_id' => $course->id]);
             return ResponseHelper::success(CourseVoucherResource::collection($courseVouchers), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -66,6 +68,8 @@ class CourseVoucherController extends Controller
             $data['course_id'] = $course->id;
             $this->courseVoucher->store($data);
             return ResponseHelper::success(true, trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
@@ -83,6 +87,8 @@ class CourseVoucherController extends Controller
         try {
             $this->courseVoucher->update($courseVoucher->id, $request->validated());
             return ResponseHelper::success(true, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
@@ -111,6 +117,8 @@ class CourseVoucherController extends Controller
             }
         } catch (HttpResponseException $e) {
             throw $e;
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.delete_failed') . '. ' . $th->getMessage());
         }
@@ -129,6 +137,8 @@ class CourseVoucherController extends Controller
                 return ResponseHelper::error(null, trans('alert.voucher_invalid'), 404);
             }
         } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
             throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());

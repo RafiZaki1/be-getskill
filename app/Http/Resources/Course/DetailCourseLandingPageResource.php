@@ -34,18 +34,6 @@ class DetailCourseLandingPageResource extends JsonResource
         ]);
 
         $result = false;
-        $classroomUser = $user?->student?->currentStudentClassroom?->classroom ?? null;
-        if ($user) {
-
-            if ($classroomUser) {
-                $result = $this->courseLearningPaths()
-                    ->whereHas('learningPath', function ($query) use ($classroomUser) {
-                        $query->where('division_id', $classroomUser->division_id)
-                            ->where('class_level', $classroomUser->class_level);
-                    })
-                    ->exists();
-            }
-        }
 
         $ratingsPercentage = $ratingsCount->mapWithKeys(function ($count, $rating) use ($totalReviews) {
             return [$rating => $totalReviews > 0 ? round(($count / $totalReviews) * 100, 2) : 0];

@@ -47,6 +47,8 @@ class CategoryController extends Controller
                 $data['data'] = CategoryResource::collection($categories);
             }
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -63,6 +65,8 @@ class CategoryController extends Controller
     
             $this->category->store($data);
             return ResponseHelper::success(true, trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
@@ -76,6 +80,8 @@ class CategoryController extends Controller
         try {
             $this->category->update($category->id, $request->validated());
             return ResponseHelper::success(true, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }

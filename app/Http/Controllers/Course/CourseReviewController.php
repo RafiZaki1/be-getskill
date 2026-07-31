@@ -43,6 +43,8 @@ class CourseReviewController extends Controller
         try {
             $courseReview = $this->courseReview->get();
             return ResponseHelper::success(CourseReviewResource::collection($courseReview), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -57,6 +59,8 @@ class CourseReviewController extends Controller
         try {
             $courseReviews = $this->courseReview->getLatest();
             return ResponseHelper::success(CourseReviewResource::collection($courseReviews), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -96,6 +100,8 @@ class CourseReviewController extends Controller
             } else {
                 return ResponseHelper::error(null, trans('Anda sudah memberi rating pada kursus ini'));
             }
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
@@ -112,6 +118,8 @@ class CourseReviewController extends Controller
         try {
             $courseReview = $this->courseReview($courseReview->id);
             return ResponseHelper::success(new CourseReviewResource($courseReview), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -129,6 +137,8 @@ class CourseReviewController extends Controller
         try {
             $this->courseReview->update($courseReview->id, $request->validated());
             return ResponseHelper::success(true, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
@@ -139,6 +149,8 @@ class CourseReviewController extends Controller
         try {
             $courseReview = $this->courseReview->latest(3);
             return ResponseHelper::success($courseReview, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -149,6 +161,8 @@ class CourseReviewController extends Controller
         try {
             $this->courseReview->delete($courseReview->id);
             return ResponseHelper::success($courseReview, trans('alert.delete_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.delete_failed') . '. ' . $th->getMessage());
         }

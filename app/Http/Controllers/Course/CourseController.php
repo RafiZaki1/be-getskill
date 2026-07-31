@@ -62,6 +62,8 @@ class CourseController extends Controller
             ->filter(fn($course) => $course->is_ready); 
 
             return ResponseHelper::success(CustomCourseResource::collection($courses), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('get some course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -81,6 +83,8 @@ class CourseController extends Controller
                 $data['data'] = CourseListResource::collection($courses);
             }
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('index course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -101,6 +105,8 @@ class CourseController extends Controller
             $this->course->store($this->service->store($request));
             DB::commit();
             return ResponseHelper::success(true, trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             DB::rollback();
             Log::error('store course error: ' . $th->getMessage());
@@ -119,6 +125,8 @@ class CourseController extends Controller
         try {
             $course = $this->course->showWithSlug($request, $slug);
             return ResponseHelper::success(DetailCourseResource::make($course), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('show course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -130,6 +138,8 @@ class CourseController extends Controller
         try {
             $course = $this->course->showWithSlug($request, $slug);
             return ResponseHelper::success(DetailCourseLandingPageResource::make($course), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('show landing course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -151,6 +161,8 @@ class CourseController extends Controller
             $this->course->update($course->id, $this->service->update($course, $request));
             DB::commit();
             return ResponseHelper::success(true, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             DB::rollback();
             Log::error('update course error: ' . $th->getMessage());
@@ -179,6 +191,8 @@ class CourseController extends Controller
             $course = $this->course->showWithSlug($request, $slug,);
             // dd($course->transactions);
             return ResponseHelper::success(CourseStatisticResource::make($course), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('statistic course  error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -189,6 +203,8 @@ class CourseController extends Controller
         try {
             $courses = $this->course->getTop();
             return ResponseHelper::success(TopCourseResource::collection($courses), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('top course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -199,6 +215,8 @@ class CourseController extends Controller
         try {
             $courses = $this->course->topRatings();
             return ResponseHelper::success(TopCourseResource::collection($courses), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('top ratings course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -221,6 +239,8 @@ class CourseController extends Controller
             $course = $this->course->update($course->id, ['is_ready' => true]);
 
             return ResponseHelper::success($course, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('ready to use course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
@@ -239,6 +259,8 @@ class CourseController extends Controller
         try {
             $course = $this->course->update($course->id, ['is_ready' => false]);
             return ResponseHelper::success($course, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('make draft course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
@@ -265,6 +287,8 @@ class CourseController extends Controller
                 $data['data'] = CourseResource::collection($courses);
             }
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('list course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -282,6 +306,8 @@ class CourseController extends Controller
         try{
             $course = $this->course->showWithSlug($request, $slug);
             return ResponseHelper::success(CourseResource::make($course), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('share course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
@@ -293,6 +319,8 @@ class CourseController extends Controller
         try{
             $course_count = $this->course->count();
             return ResponseHelper::success(['course_count' => $course_count], trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -304,6 +332,8 @@ class CourseController extends Controller
             $data = $this->course->getBySubModuleSlug($subModule);
             // return ResponseHelper::success($subModule);
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -340,6 +370,8 @@ class CourseController extends Controller
         }
         $data['course'] = CourseResource::make($userQuiz->quiz->module->course);
         return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -359,6 +391,8 @@ class CourseController extends Controller
 
             DB::commit();
             return ResponseHelper::success(null, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             DB::rollBack();
             return ResponseHelper::error(null, trans('alert.update_failed'));

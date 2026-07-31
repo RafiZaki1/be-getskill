@@ -28,7 +28,7 @@ class ModuleQuestionRequest extends ApiRequest
             'option_c' => 'required',
             'option_d' => 'required',
             'option_e' => 'required',
-            'answer' => 'required',
+            'answer' => ['required', \Illuminate\Validation\Rule::enum(\App\Enums\AnswerEnum::class)],
         ];
     }
     /**

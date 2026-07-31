@@ -68,6 +68,8 @@ class SubModuleController extends Controller
             $this->contentImageService->delete($unusedImage);
 
             return ResponseHelper::success(SubModuleResource::make($subModule), trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
@@ -92,6 +94,8 @@ class SubModuleController extends Controller
 
             $this->subModule->update($subModule->id, $request->validated());
             return ResponseHelper::success(SubModuleResource::make($subModule), trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
@@ -164,6 +168,8 @@ class SubModuleController extends Controller
             $subModule->prev = $this->subModule->prevSubModule($subModule->step - 1, $subModule->module_id);
             $subModule->next = $this->subModule->nextSubModule($subModule->step + 1, $subModule->module_id);
             return ResponseHelper::success(SubModuleResource::make($subModule), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -182,6 +188,8 @@ class SubModuleController extends Controller
             $subModule->prev = $this->subModule->prevSubModule($subModule->step - 1, $subModule->module_id);
             $subModule->next = $this->subModule->nextSubModule($subModule->step + 1, $subModule->module_id);
             return ResponseHelper::success(SubModuleResource::make($subModule), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -191,6 +199,8 @@ class SubModuleController extends Controller
     {
         try {
             return ResponseHelper::success(SubModuleResource::make($subModule));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -247,6 +257,8 @@ class SubModuleController extends Controller
             }
 
             return response()->json(['success' => 0, 'message' => 'Tidak ada file yang dikirim.']);
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('Upload Image Error: ' . $th->getMessage(), [
                 'trace' => $th->getTraceAsString(),
@@ -268,6 +280,8 @@ class SubModuleController extends Controller
             $userCourse = $this->userCourse->showByCourse($subModule->module->course->id);
             $this->subModule->getAllPrevSubModule($userCourse->subModule->id, $userCourse->subModule->module->id);
             return ResponseHelper::success();
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }

@@ -66,6 +66,8 @@ class CourseTestController extends Controller
             $courseTest = $this->courseTest->show($course->id);
             if ($courseTest == null) return ResponseHelper::error(null, "Anda Belum Setting Test");
             return ResponseHelper::success(CourseTestResource::make($courseTest), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -87,6 +89,8 @@ class CourseTestController extends Controller
             $data['paginate'] = $this->customPaginate($userCourseTests->currentPage(), $userCourseTests->lastPage());
             $data['data'] = UserCourseTestResource::collection($userCourseTests);
             return responsehelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
@@ -102,6 +106,8 @@ class CourseTestController extends Controller
         try {
             $courseTests = $this->courseTest->get();
             return ResponseHelper::success(CourseTestResource::collection($courseTests), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -132,6 +138,8 @@ class CourseTestController extends Controller
             $data['course'] = new CourseResource($courseTest->course);
         
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -180,6 +188,8 @@ class CourseTestController extends Controller
             }
     
             return ResponseHelper::success(['id' => $uct->id], trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -197,6 +207,8 @@ class CourseTestController extends Controller
         try {
             $this->service->submit($request, $userCourseTest);
             return ResponseHelper::success(null, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
@@ -225,6 +237,8 @@ class CourseTestController extends Controller
     
             // Return the response with the modified data
             return ResponseHelper::success($data, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -244,6 +258,8 @@ class CourseTestController extends Controller
                 ->keyBy('test_type');
     
             return ResponseHelper::success($allTests, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -287,6 +303,8 @@ class CourseTestController extends Controller
             }
     
             return ResponseHelper::success(true, trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.accept_failed') . '. ' . $th->getMessage());
         }
@@ -305,6 +323,8 @@ class CourseTestController extends Controller
         try {
             $this->courseTest->update($courseTest->id, $request->validated());
             return ResponseHelper::success(true, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
@@ -322,6 +342,8 @@ class CourseTestController extends Controller
         try {
             $this->courseTest->delete($courseTest->id);
             return ResponseHelper::success(true, trans('alert.delete_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.delete_failed') . '. ' . $th->getMessage());
         }
@@ -333,6 +355,8 @@ class CourseTestController extends Controller
         try {
             $courseTest = $this->courseTest->showWithSlug($slug);
             return ResponseHelper::success(CourseTestDetailResource::make($courseTest), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -362,6 +386,8 @@ class CourseTestController extends Controller
                 return ResponseHelper::success(['deleted_id' => $id], trans('alert.delete_success'));
             });
         } catch (HttpResponseException $e) {
+            throw $e;
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
             throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.delete_failed') . '. ' . $th->getMessage());

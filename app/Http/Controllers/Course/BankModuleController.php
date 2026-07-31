@@ -32,6 +32,8 @@ class BankModuleController extends Controller
         try{
             $courses = $this->courseRepository->getSome($request);
             return ResponseHelper::success(CourseModuleNoDetailResource::collection($courses), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -44,6 +46,8 @@ class BankModuleController extends Controller
             $payload['data'] = BankModuleResource::collection($banks);
             $payload['paginate'] = $this->customPaginate($banks->currentPage(), $banks->lastPage());
             return ResponseHelper::success($payload, trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed').'. '.$th->getMessage());
         }
@@ -56,6 +60,8 @@ class BankModuleController extends Controller
             $bank = $this->bankModuleRepository->store($request->validated());
             DB::commit();
             return ResponseHelper::success(BankModuleResource::make($bank->load('items')), trans('alert.store_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             DB::rollBack();
             return ResponseHelper::error(null, trans('alert.add_failed').'. '.$th->getMessage());
@@ -67,6 +73,8 @@ class BankModuleController extends Controller
         try {
             $bank = $this->bankModuleRepository->find($id);
             return ResponseHelper::success(BankModuleResource::make($bank), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed').'. '.$th->getMessage());
         }
@@ -79,6 +87,8 @@ class BankModuleController extends Controller
             $bank = $this->bankModuleRepository->update($id, $request->validated());
             DB::commit();
             return ResponseHelper::success(BankModuleResource::make($bank->load('items')), trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             DB::rollBack();
             return ResponseHelper::error(null, trans('alert.update_failed').'. '.$th->getMessage());
@@ -92,6 +102,8 @@ class BankModuleController extends Controller
             $this->bankModuleRepository->delete($id);
             DB::commit();
             return ResponseHelper::success(null, trans('alert.delete_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             DB::rollBack();
             return ResponseHelper::error(null, trans('alert.delete_failed').'. '.$th->getMessage());

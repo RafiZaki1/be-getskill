@@ -52,6 +52,8 @@ class QuizController extends Controller
             $module = $this->module->showWithSlug($slug);
             $quiz = $module->quizzes->first();
             return ResponseHelper::success(QuizResource::make($quiz), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -98,6 +100,8 @@ class QuizController extends Controller
             return responsehelper::success($data, trans('alert.fetch_success'));
         } catch (HttpResponseException $e) {
             throw $e;
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -129,6 +133,8 @@ class QuizController extends Controller
         try {
             $result = $this->userQuiz->show($userQuiz->id);
             return ResponseHelper::success(ResultResource::make($result), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
@@ -143,6 +149,8 @@ class QuizController extends Controller
         try {
             $quizzes = $this->quiz->get();
             return ResponseHelper::success(QuizResource::collection($quizzes), trans('alert.fetch_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans(null, trans('alert.fetch_failed') . '. ' . $th->getMessage()));
         }
@@ -159,11 +167,19 @@ class QuizController extends Controller
     {
         $data = $request->validated();
         try {
-            $this->service->checkIsAvailableQuiz($request, $module->id);
+            $moduleId = $module->id ?? $request->module_id;
 
-            $data['module_id'] = $module->id;
+            if (!$moduleId) {
+                return ResponseHelper::error(null, 'Module ID tidak ditemukan. Harap sertakan di URL atau di dalam body request.');
+            }
+
+            $this->service->checkIsAvailableQuiz($request, $moduleId);
+
+            $data['module_id'] = $moduleId;
             $this->quiz->store($data);
             return ResponseHelper::success(true, trans('alert.add_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
@@ -180,6 +196,8 @@ class QuizController extends Controller
         try {
             $this->quiz->delete($quiz->id);
             return ResponseHelper::success(null, trans('alert.delete_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             return ResponseHelper::error(null, trans('alert.delete_failed') . '. ' . $th->getMessage());
         }
