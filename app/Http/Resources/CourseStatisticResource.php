@@ -18,17 +18,7 @@ class CourseStatisticResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $transactions = $this->transactions;
-
-        $groupedTransactions = $transactions->groupBy(function ($date) {
-            return Carbon::parse($date->created_at)->format('m');
-        });
-
-        $groupedTransactionsWithMonthName = $groupedTransactions->mapWithKeys(function ($items, $key) {
-            $monthName = Carbon::createFromFormat('m', $key)->locale('id')->isoFormat('MMMM');
-            $monthNameLowerCase = strtolower($monthName);
-            return [$monthNameLowerCase => $items->sum('amount')];
-        });
+        $groupedTransactionsWithMonthName = collect([]);
 
         $preTestAvg = UserCourseTest::whereIn('course_test_id', $this->courseTests->pluck('id'))
             ->where('test_type', TestEnum::PRETEST->value)
