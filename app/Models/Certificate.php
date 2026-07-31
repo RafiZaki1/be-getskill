@@ -11,7 +11,6 @@ class Certificate extends Model
     use HasFactory;
     protected $fillable = [
         'user_course_id',
-        'user_event_id',
         'code',
         'username',
         'certificate',
@@ -26,13 +25,4 @@ class Certificate extends Model
         return $this->belongsTo(UserCourse::class);
     }
 
-    /**
-     * Get the userEvent that owns the Certificate
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function userEvent(): BelongsTo
-    {
-        return $this->belongsTo(UserEvent::class);
-    }
 }

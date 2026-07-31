@@ -43,13 +43,7 @@ interface CourseInterface extends CustomPaginationInterface, StoreInterface, Upd
      * @return mixed
      */
     public function getTop(): mixed;    
-    /**
-     * Method getSome
-     *
-     * @return mixed
-     */
-    public function getSome(Request $request): mixed;
-    public function getSome2(Request $request): mixed;
+
     public function getCourseById(mixed $courseId): mixed;
     public function getByCourseIds(array $courseIds);
     public function getByCourseIdsWithRelations(array $courseIds);

@@ -46,44 +46,7 @@ class CourseTestRepository extends BaseRepository implements CourseTestInterface
         })->first();
     }
 
-    public function getByTeacher(Request $request, mixed $id, int $pagination = 10 ): LengthAwarePaginator
-    {
-        return $this->model->query()
-        ->whereHas('course', function($query) use ($id){
-            $query->whereHas('courseLearningPaths', function($query) use ($id){
-                $query->whereHas('learningPath', function($query) use ($id){
-                    $query->whereHas('division', function($query) use ($id){
-                        $query->whereHas('classrooms', function($query) use ($id){
-                            $query->whereRelation('teacher.user', 'id', $id);
-                        });
-                    });
-                });
-            });
-        })
-        ->when($request->search, function($query) use ($request){
-            $query->whereRelation('course', 'title', 'LIKE', '%'. $request->search . '%');
-        })
-        ->fastPaginate(10);
-    }
-    public function getByMentor(Request $request, mixed $id, int $pagination = 10 ): LengthAwarePaginator
-    {
-        return $this->model->query()
-        ->whereHas('course', function($query) use ($id){
-            $query->whereHas('courseLearningPaths', function($query) use ($id){
-                $query->whereHas('learningPath', function($query) use ($id){
-                    $query->whereHas('division', function($query) use ($id){
-                        $query->whereHas('classrooms', function($query) use ($id){
-                            $query->whereRelation('user', 'id', $id);
-                        });
-                    });
-                });
-            });
-        })
-        ->when($request->search, function($query) use ($request){
-            $query->whereRelation('course', 'title', 'LIKE', '%'. $request->search . '%');
-        })
-        ->fastPaginate(10);
-    }
+
 
     /**
      * Method store

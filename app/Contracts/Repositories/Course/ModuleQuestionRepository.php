@@ -9,7 +9,7 @@ use App\Contracts\Repositories\BaseRepository;
 use App\Models\Category;
 use App\Models\Course;
 use App\Models\ModuleQuestion;
-use Hammerstone\FastPaginate\FastPaginate;
+use Hammerstone\paginate\paginate;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -34,7 +34,7 @@ class ModuleQuestionRepository extends BaseRepository implements ModuleQuestionI
             ->query()
             ->whereIn('id', $request->id)
             ->orderByRaw("FIELD(id, '$questionIds')")
-            ->fastPaginate($pagination);
+            ->paginate($pagination);
     }
     /**
      * Method getQuestions

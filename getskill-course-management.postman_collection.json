@@ -1,0 +1,1424 @@
+{
+  "info": {
+    "name": "GetSkill - Course Management API (Full)",
+    "description": "Collection lengkap untuk testing 33 fitur Course Management (Admin Role)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.data && jsonData.data.token) {",
+                  "    pm.environment.set(\"token\", jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Course Management",
+      "item": [
+        {
+          "name": "1. Daftar Kursus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2. Tambah Kursus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Kursus Baru",
+                  "type": "text"
+                },
+                {
+                  "key": "sub_title",
+                  "value": "Sub judul",
+                  "type": "text"
+                },
+                {
+                  "key": "sub_category_id",
+                  "value": "uuid-category",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Deskripsi",
+                  "type": "text"
+                },
+                {
+                  "key": "is_premium",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "150000",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3. Edit Kursus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses/uuid-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses",
+                "uuid-course"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PUT",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "Kursus Edit",
+                  "type": "text"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "4. Hapus Kursus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses/uuid-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses",
+                "uuid-course"
+              ]
+            }
+          }
+        },
+        {
+          "name": "5. Publish Kursus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses-ready/uuid-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses-ready",
+                "uuid-course"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6. Unpublish Kursus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses-make-draft/uuid-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses-make-draft",
+                "uuid-course"
+              ]
+            }
+          }
+        },
+        {
+          "name": "7. Detail Kursus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/courses/slug-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "courses",
+                "slug-course"
+              ]
+            }
+          }
+        },
+        {
+          "name": "33. Statistik Pembelian",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/course-statistic/slug-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "course-statistic",
+                "slug-course"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Module Management",
+      "item": [
+        {
+          "name": "8. Tambah Modul",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/modules/slug-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "modules",
+                "slug-course"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Modul 1\",\n  \"sub_title\": \"Sub judul modul 1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "9. Edit Modul",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/modules/uuid-module",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "modules",
+                "uuid-module"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Modul 1 Edit\",\n  \"sub_title\": \"Sub judul edit\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "10. Hapus Modul",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/modules/uuid-module",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "modules",
+                "uuid-module"
+              ]
+            }
+          }
+        },
+        {
+          "name": "11a. Urutan Maju",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/modules-forward/uuid-module",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "modules-forward",
+                "uuid-module"
+              ]
+            }
+          }
+        },
+        {
+          "name": "11b. Urutan Mundur",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/modules-backward/uuid-module",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "modules-backward",
+                "uuid-module"
+              ]
+            }
+          }
+        },
+        {
+          "name": "12. Detail Modul",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/modules/detail/uuid-module",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "modules",
+                "detail",
+                "uuid-module"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Sub Module (Materi)",
+      "item": [
+        {
+          "name": "13. Tambah Materi",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sub-modules/uuid-module",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sub-modules",
+                "uuid-module"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Materi 1\",\n  \"sub_title\": \"Pendahuluan\",\n  \"content\": \"{\\\"time\\\": 1629803154823, \\\"blocks\\\": []}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "14. Edit Materi",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sub-modules-update/uuid-submodule",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sub-modules-update",
+                "uuid-submodule"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Materi 1 Edit\",\n  \"sub_title\": \"Revisi\",\n  \"content\": \"{\\\"blocks\\\": []}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "15. Hapus Materi",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sub-modules/uuid-submodule",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sub-modules",
+                "uuid-submodule"
+              ]
+            }
+          }
+        },
+        {
+          "name": "16a. Materi Maju",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sub-modules-forward/uuid-submodule",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sub-modules-forward",
+                "uuid-submodule"
+              ]
+            }
+          }
+        },
+        {
+          "name": "16b. Materi Mundur",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sub-modules-backward/uuid-submodule",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sub-modules-backward",
+                "uuid-submodule"
+              ]
+            }
+          }
+        },
+        {
+          "name": "17. Detail Materi",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sub-modules/detail/slug-submodule",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "sub-modules",
+                "detail",
+                "slug-submodule"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Tugas Modul",
+      "item": [
+        {
+          "name": "18. Tambah Tugas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/module-tasks/uuid-module",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "module-tasks",
+                "uuid-module"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Apa tugasnya?\",\n  \"description\": \"Jelaskan rinci\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "19. Edit Tugas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/module-tasks/uuid-task",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "module-tasks",
+                "uuid-task"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Edit tugasnya?\",\n  \"description\": \"Jelaskan\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "20. Hapus Tugas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/module-tasks/uuid-task",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "module-tasks",
+                "uuid-task"
+              ]
+            }
+          }
+        },
+        {
+          "name": "21. Detail Tugas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/module-tasks-detail/uuid-task",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "module-tasks-detail",
+                "uuid-task"
+              ]
+            }
+          }
+        },
+        {
+          "name": "22. Daftar Kumpulan Tugas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/submission-tasks/uuid-task",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "submission-tasks",
+                "uuid-task"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Kuis Modul",
+      "item": [
+        {
+          "name": "23. Pengaturan Kuis (Add/Edit)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/quizzes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quizzes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"module_id\": \"uuid-module\",\n  \"duration\": 60,\n  \"rules\": \"Dilarang nyontek\",\n  \"kkm\": 70\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "24. Hapus Pengaturan Kuis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/quizzes/uuid-quiz",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "quizzes",
+                "uuid-quiz"
+              ]
+            }
+          }
+        },
+        {
+          "name": "25. Tambah Soal Kuis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/module-questions/uuid-module",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "module-questions",
+                "uuid-module"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"1+1?\",\n  \"option_a\": \"1\",\n  \"option_b\": \"2\",\n  \"option_c\": \"3\",\n  \"option_d\": \"4\",\n  \"option_e\": \"5\",\n  \"answer\": \"B\",\n  \"point\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "26. Edit Soal Kuis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/module-question/uuid-question/update",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "module-question",
+                "uuid-question",
+                "update"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"2+2?\",\n  \"answer\": \"A\",\n  \"point\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "27. Hapus Soal Kuis",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/module-questions/uuid-question",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "module-questions",
+                "uuid-question"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Pre-test & Post-test",
+      "item": [
+        {
+          "name": "28a. Pengaturan Test (Tambah)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/course-tests/slug-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "course-tests",
+                "slug-course"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"type\":\"pre_test\",\"duration\":120,\"rules\":\"Kerjakan jujur\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "28b. Pengaturan Test (Edit)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/course-tests/uuid-test",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "course-tests",
+                "uuid-test"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"duration\":90}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "29. Daftar User Mengerjakan Test",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user-course-tests/slug-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user-course-tests",
+                "slug-course"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Vouchers",
+      "item": [
+        {
+          "name": "30. Tambah Voucher",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/course-vouchers/slug-course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "course-vouchers",
+                "slug-course"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"code\":\"PROMO2026\",\"discount\":50000,\"start_date\":\"2026-08-01\",\"end_date\":\"2026-08-31\",\"limit\":100}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "31. Edit Voucher",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/course-vouchers/code-voucher",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "course-vouchers",
+                "code-voucher"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"discount\":60000,\"limit\":50}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "32. Hapus Voucher",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/course-vouchers/uuid-voucher",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "course-vouchers",
+                "uuid-voucher"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

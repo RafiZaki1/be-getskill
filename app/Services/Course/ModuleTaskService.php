@@ -18,25 +18,6 @@ class ModuleTaskService
         $this->submissionTask = $submissionTask;
     }
 
-    public function getStudentWithSubmissionTask(mixed $data, ModuleTask $moduleTask)
-    {
-        $data->getCollection()->transform(function ($studentClassroom) use ($moduleTask) {
-            $submissionTask = $studentClassroom->student->user->submissionTasks
-                ->where('module_task_id', $moduleTask->id)
-                ->first();
-
-            $status = ! $submissionTask
-                ? 'belum mengumpulkan'
-                : (! $submissionTask->grade ? 'belum dinilai' : 'sudah dinilai');
-
-            $studentClassroom->setAttribute('submissionTask', $submissionTask);
-            $studentClassroom->setAttribute('status', $status);
-
-            return $studentClassroom;
-        });
-
-        return $data;
-    }
 
     /**
      * Membuat file ZIP dari semua submission task dalam 1 module task.
@@ -82,41 +63,5 @@ class ModuleTaskService
         return $zipPath;
     }
 
-    /**
-     * Get Student With All grade Submission And Average grade
-     * 
-     * @param mixed $studentClassrooms
-     * @param mixed $moduleTasks
-     * @return LengthAwarePaginator
-     */
-    public function getStudentWithScoreSubmissionTask(mixed $studentClassrooms, mixed $moduleTasks): LengthAwarePaginator
-    {
-        $studentClassrooms->getCollection()->transform(function ($studentClassroom) use ($moduleTasks) {
-            $grades = [];
-            $sum = 0;
-            $count = 0;
 
-            foreach($moduleTasks as $index => $moduleTask) {
-                $submissionTask = $this->submissionTask->getByStudentAndTask($studentClassroom->student->user_id, $moduleTask->id);
-    
-                $grade = $submissionTask?->grade ?? '-';
-
-                $grades['task_' . ($index + 1)] = $grade;
-                
-                if (is_numeric($grade)) {
-                    $sum += $grade;
-                    $count++;
-                }
-            }
-
-            $average = $count > 0 ? round($sum / $count, 2) : '-';
-
-            $studentClassroom->setAttribute('average_grade', $average);
-            $studentClassroom->setAttribute('grades', $grades);
-            
-            return $studentClassroom;
-        });
-
-        return $studentClassrooms;
-    }
 }

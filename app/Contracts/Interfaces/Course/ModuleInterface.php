@@ -76,13 +76,7 @@ interface ModuleInterface extends CustomPaginationInterface, StoreInterface, Sho
      */
     public function whereStepCourse(int $step, mixed $course_id): mixed;
 
-    /**
-     * whereDivision
-     *
-     * @param  mixed $step
-     * @return mixed
-     */
-    public function whereDivision(mixed $division_id): mixed;
+
 
     /**
      * Perform bulk update on ids

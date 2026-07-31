@@ -95,7 +95,7 @@ class ModuleTaskRepository extends BaseRepository implements ModuleTaskInterface
         })->when($request->search, function ($query) use ($request) {
             $query->where('question', 'like', '%' . $request->search . '%');
         })
-        ->fastPaginate($pagination);
+        ->paginate($pagination);
     }
 
     public function searchUser(Request $request)

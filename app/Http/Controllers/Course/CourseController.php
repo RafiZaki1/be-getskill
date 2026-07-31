@@ -9,13 +9,16 @@ use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseUpdateRequest;
 use App\Http\Requests\StoreCourseRequest;
+use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\Course\DetailCourseLandingPageResource;
 use App\Http\Resources\Course\DetailCourseResource;
 use App\Http\Resources\CourseListResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\CourseStatisticResource;
 use App\Http\Resources\CustomCourseResource;
+use App\Http\Resources\QuizResource;
 use App\Http\Resources\TopCourseResource;
+use App\Http\Resources\UserCourseResource;
 use App\Models\Course;
 use App\Models\UserQuiz;
 use App\Services\Course\CourseService;
@@ -56,7 +59,7 @@ class CourseController extends Controller
             $course2 = $this->course->getSome2($request);
 
             $courses = $course1->merge($course2)
-            ->filter(fn($course) => $course->is_ready);
+            ->filter(fn($course) => $course->is_ready); 
 
             return ResponseHelper::success(CustomCourseResource::collection($courses), trans('alert.fetch_success'));
         } catch (\Throwable $th) {
@@ -218,6 +221,8 @@ class CourseController extends Controller
             $course = $this->course->update($course->id, ['is_ready' => true]);
 
             return ResponseHelper::success($course, trans('alert.update_success'));
+        } catch (\Illuminate\Http\Exceptions\HttpResponseException $e) {
+            throw $e;
         } catch (\Throwable $th) {
             Log::error('ready to use course error: ' . $th->getMessage());
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
@@ -227,7 +232,7 @@ class CourseController extends Controller
     /*
      * Method makeDraft
      *
-     * @param Course $course
+     * @param Course $course 
      *
      * @return JsonResponse
      */

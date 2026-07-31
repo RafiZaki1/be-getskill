@@ -40,7 +40,7 @@ class SubModuleRepository extends BaseRepository implements SubModuleInterface
             })->when($request->module_id, function ($query) use ($request) {
                 $query->where('module_id', $request->module_id);
             })
-            ->fastPaginate($pagination);
+            ->paginate($pagination);
     }
     /**
      * Method store

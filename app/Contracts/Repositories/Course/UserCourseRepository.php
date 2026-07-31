@@ -59,7 +59,7 @@ class UserCourseRepository extends BaseRepository implements UserCourseInterface
                     $q->where('title', 'like', "%{$keyword}%");
                 });
             })
-            ->fastPaginate($pagination);
+            ->paginate($pagination);
     }
 
     public function courseActivity(Request $request, int $pagination = 10): LengthAwarePaginator
@@ -92,7 +92,7 @@ class UserCourseRepository extends BaseRepository implements UserCourseInterface
                 $keyword = $request->input('name');
                 $q->whereHas('course', fn($cq) => $cq->where('title', 'like', "%{$keyword}%"));
             })
-            ->fastPaginate($pagination);
+            ->paginate($pagination);
     }
 
     public function findByCourseAndUser($courseId, $userId): mixed

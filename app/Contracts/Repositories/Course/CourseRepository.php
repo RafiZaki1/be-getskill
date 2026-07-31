@@ -4,7 +4,6 @@ namespace App\Contracts\Repositories\Course;
 use App\Contracts\Interfaces\Course\CourseInterface;
 use App\Contracts\Repositories\BaseRepository;
 use App\Models\Course;
-use App\Models\CourseLearningPath;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -15,8 +14,6 @@ use Laravel\Sanctum\PersonalAccessToken;
 class CourseRepository extends BaseRepository implements CourseInterface
 {
 
-    public Model $courseLearningPath;
-
     /**
      * Method __construct
      *
@@ -24,10 +21,9 @@ class CourseRepository extends BaseRepository implements CourseInterface
      *
      * @return void
      */
-    public function __construct(Course $course, CourseLearningPath $courseLearningPath)
+    public function __construct(Course $course)
     {
         $this->model              = $course;
-        $this->courseLearningPath = $courseLearningPath;
     }
     /**
      * Method customPaginate
@@ -127,7 +123,7 @@ class CourseRepository extends BaseRepository implements CourseInterface
                     });
             })
             ->orderBy('created_at', 'desc')
-            ->fastPaginate($pagination);
+            ->paginate($pagination);
     }
 
     /**
@@ -164,37 +160,6 @@ class CourseRepository extends BaseRepository implements CourseInterface
             ->get();
     }
 
-    public function orderByStep(): mixed
-    {
-        return $this->courseLearningPath->select('step')->whereColumn('courses.id', 'course_learning_paths.course_id')->limit(1);
-    }
-
-    public function getSome($request): mixed
-    {
-        return $this->model->query()
-            ->when($request->search, function ($query) use ($request) {
-                $query->where('title', "LIKE", "%$request->search%");
-            })
-            ->whereHas('courseLearningPaths', function ($query) use ($request) {
-                $query->whereRelation('learningPath', 'division_id', $request->division_id)->whereRelation('learningPath', 'class_level', $request->class_level);
-            })
-            ->orderBy(
-                $this->orderByStep()
-            )
-            ->get();
-    }
-
-    public function getSome2($request): mixed
-    {
-        return $this->model->query()
-            ->when($request->search, function ($query) use ($request) {
-                $query->where('title', "LIKE", "%$request->search%");
-            })
-            ->whereDoesntHave('courseLearningPaths', function ($query) use ($request) {
-                $query->whereRelation('learningPath', 'division_id', $request->division_id)->whereRelation('learningPath', 'class_level', $request->class_level);
-            })
-            ->get();
-    }
 
     /**
      * search
@@ -327,7 +292,7 @@ class CourseRepository extends BaseRepository implements CourseInterface
     {
         return $this->model->query()->whereHas('userCourses', function ($query) {
             $query->where('user_id', auth()->user()->id);
-        })->fastPaginate(9);
+        })->paginate(9);
     }
 
     public function getCourseWithModulesAndTasks($courseId)
