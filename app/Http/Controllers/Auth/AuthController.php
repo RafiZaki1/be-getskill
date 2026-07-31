@@ -29,11 +29,11 @@ class AuthController extends Controller
             'otp_code' => $otpCode,
             'otp_expires_at' => $otpExpiresAt,
         ]);
-        
+
         Log::info("OTP for {$user->email} is {$otpCode}");
 
         return response()->json([
-            'message' => 'User registered successfully. Please check your email for the OTP.', 
+            'message' => 'User registered successfully. Please check your email for the OTP.',
         ], 201);
     }
 
