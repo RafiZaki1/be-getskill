@@ -129,8 +129,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Login ke aplikasi",
-                "description": "Login untuk mendapatkan token akses",
+                "summary": "Login ke aplikasi (HTTP Only Cookie)",
+                "description": "Login dan mendapatkan token di dalam HTTP-Only Cookie",
                 "operationId": "authLogin",
                 "requestBody": {
                     "required": true,
@@ -160,7 +160,15 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Login berhasil",
+                        "description": "Login berhasil, token akan diset di Set-Cookie headers",
+                        "headers": {
+                            "Set-Cookie": {
+                                "description": "Berisi access_token yang HTTP-Only",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -169,10 +177,6 @@
                                             "properties": {
                                                 "user": {
                                                     "type": "object"
-                                                },
-                                                "token": {
-                                                    "type": "string",
-                                                    "example": "1|xxx..."
                                                 }
                                             },
                                             "type": "object"
@@ -227,6 +231,119 @@
                         "bearerAuth": []
                     }
                 ]
+            }
+        },
+        "/api/forgot-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Lupa password (forgot password)",
+                "description": "Mengirimkan OTP ke email untuk mereset password",
+                "operationId": "authForgotPassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengirim OTP",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An OTP has been sent to your email address."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reset-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Reset password",
+                "description": "Mereset password menggunakan OTP yang dikirim ke email",
+                "operationId": "authResetPassword",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "otp_code",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "otp_code": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil reset password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Password has been reset successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/courses": {
@@ -412,6 +529,1380 @@
                 "responses": {
                     "200": {
                         "description": "Kursus berhasil dihapus"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/course-statistic/{slug}": {
+            "get": {
+                "tags": [
+                    "Admin - Courses"
+                ],
+                "summary": "Statistik pembelian pada kursus (Admin)",
+                "description": "Melihat statistik terkait kursus",
+                "operationId": "adminCourseStatistic",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil statistik kursus"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/courses-ready/{course}": {
+            "patch": {
+                "tags": [
+                    "Admin - Courses"
+                ],
+                "summary": "Publish kursus (Admin)",
+                "description": "Mempublish kursus agar dapat diakses",
+                "operationId": "adminCoursePublish",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mempublish kursus"
+                    },
+                    "422": {
+                        "description": "Belum ada sub modul atau test pada kursus ini"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/courses-make-draft/{course}": {
+            "patch": {
+                "tags": [
+                    "Admin - Courses"
+                ],
+                "summary": "Unpublish kursus (Admin)",
+                "description": "Menjadikan kursus sebagai draft / unpublish",
+                "operationId": "adminCourseUnpublish",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil unpublish kursus"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/course/{course}/arrange-modules": {
+            "put": {
+                "tags": [
+                    "Admin - Courses"
+                ],
+                "summary": "Mengubah urutan modul kursus (Admin)",
+                "description": "Mengatur ulang urutan modul di dalam sebuah kursus",
+                "operationId": "adminCourseArrangeModules",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengatur urutan modul"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/course-tests/{slug}": {
+            "post": {
+                "tags": [
+                    "Admin - Course Tests"
+                ],
+                "summary": "Pengaturan test untuk pre-test dan post-test (Admin)",
+                "description": "Menambahkan pengaturan test (pre-test/post-test)",
+                "operationId": "adminCourseTestStore",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "duration": {
+                                        "type": "integer",
+                                        "example": 60
+                                    },
+                                    "min_score": {
+                                        "type": "integer",
+                                        "example": 80
+                                    },
+                                    "question_count": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            5,
+                                            10
+                                        ]
+                                    },
+                                    "module_id": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "uuid1",
+                                            "uuid2"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menambahkan test"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/course-tests/{course_test}": {
+            "put": {
+                "tags": [
+                    "Admin - Course Tests"
+                ],
+                "summary": "Edit pengaturan test (Admin)",
+                "description": "Mengedit pengaturan pre-test / post-test",
+                "operationId": "adminCourseTestUpdate",
+                "parameters": [
+                    {
+                        "name": "course_test",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "duration": {
+                                        "type": "integer",
+                                        "example": 45
+                                    },
+                                    "min_score": {
+                                        "type": "integer",
+                                        "example": 75
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengupdate test"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Course Tests"
+                ],
+                "summary": "Hapus test (Admin)",
+                "description": "Menghapus pengaturan test",
+                "operationId": "adminCourseTestDestroy",
+                "parameters": [
+                    {
+                        "name": "course_test",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menghapus test"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/course-vouchers/{courseSlug}": {
+            "get": {
+                "tags": [
+                    "Admin - Course Vouchers"
+                ],
+                "summary": "Daftar voucher kursus (Admin)",
+                "description": "Melihat daftar voucher yang ada di sebuah kursus",
+                "operationId": "adminCourseVoucherIndex",
+                "parameters": [
+                    {
+                        "name": "courseSlug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil daftar voucher kursus"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin - Course Vouchers"
+                ],
+                "summary": "Tambah voucher kursus (Admin)",
+                "description": "Menambahkan voucher baru pada kursus",
+                "operationId": "adminCourseVoucherStore",
+                "parameters": [
+                    {
+                        "name": "courseSlug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "DISKON50"
+                                    },
+                                    "discount": {
+                                        "type": "integer",
+                                        "example": 50000
+                                    },
+                                    "usage_limit": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "expired_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-12-31"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menambahkan voucher"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/course-vouchers/{course_voucher}": {
+            "put": {
+                "tags": [
+                    "Admin - Course Vouchers"
+                ],
+                "summary": "Edit voucher kursus (Admin)",
+                "description": "Mengedit voucher kursus",
+                "operationId": "adminCourseVoucherUpdate",
+                "parameters": [
+                    {
+                        "name": "course_voucher",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "DISKON100"
+                                    },
+                                    "discount": {
+                                        "type": "integer",
+                                        "example": 100000
+                                    },
+                                    "usage_limit": {
+                                        "type": "integer",
+                                        "example": 20
+                                    },
+                                    "expired_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2027-12-31"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengupdate voucher"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Course Vouchers"
+                ],
+                "summary": "Hapus voucher kursus (Admin)",
+                "description": "Menghapus voucher kursus",
+                "operationId": "adminCourseVoucherDestroy",
+                "parameters": [
+                    {
+                        "name": "course_voucher",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menghapus voucher"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/modules/{slug}": {
+            "post": {
+                "tags": [
+                    "Admin - Modules"
+                ],
+                "summary": "Tambah modul kursus (Admin)",
+                "description": "Menambahkan modul baru pada sebuah kursus berdasarkan slug",
+                "operationId": "adminModuleStore",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Pendahuluan"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Deskripsi modul"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menambahkan modul"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/modules/detail/{module}": {
+            "get": {
+                "tags": [
+                    "Admin - Modules"
+                ],
+                "summary": "Detail modul kursus (Admin)",
+                "description": "Melihat detail modul",
+                "operationId": "adminModuleShow",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil detail modul"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/modules/{module}": {
+            "put": {
+                "tags": [
+                    "Admin - Modules"
+                ],
+                "summary": "Edit modul kursus (Admin)",
+                "description": "Mengedit data modul",
+                "operationId": "adminModuleUpdate",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Pendahuluan Revisi"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Deskripsi modul revisi"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengupdate modul"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Modules"
+                ],
+                "summary": "Hapus modul kursus (Admin)",
+                "description": "Menghapus modul",
+                "operationId": "adminModuleDestroy",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menghapus modul"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/module/{module}/arrange-submodules": {
+            "put": {
+                "tags": [
+                    "Admin - Modules"
+                ],
+                "summary": "Mengubah urutan materi pada modul (Admin)",
+                "description": "Mengatur ulang urutan materi (sub modul) di dalam sebuah modul",
+                "operationId": "adminModuleArrangeSubModules",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengatur urutan materi sub modul"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/module-questions/{module}": {
+            "post": {
+                "tags": [
+                    "Admin - Module Questions"
+                ],
+                "summary": "Tambah soal untuk quiz pada modul (Admin)",
+                "description": "Menambahkan soal baru untuk kuis dalam sebuah modul",
+                "operationId": "adminModuleQuestionStore",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "question": {
+                                        "type": "string",
+                                        "example": "Berapa 1 + 1?"
+                                    },
+                                    "answer": {
+                                        "type": "string",
+                                        "example": "A"
+                                    },
+                                    "a": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "b": {
+                                        "type": "string",
+                                        "example": "2"
+                                    },
+                                    "c": {
+                                        "type": "string",
+                                        "example": "3"
+                                    },
+                                    "d": {
+                                        "type": "string",
+                                        "example": "4"
+                                    },
+                                    "e": {
+                                        "type": "string",
+                                        "example": "5"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menambahkan soal"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/module-questions/{module_question}": {
+            "put": {
+                "tags": [
+                    "Admin - Module Questions"
+                ],
+                "summary": "Edit soal untuk quiz pada modul (Admin)",
+                "description": "Mengedit soal quiz pada modul",
+                "operationId": "adminModuleQuestionUpdate",
+                "parameters": [
+                    {
+                        "name": "module_question",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "question": {
+                                        "type": "string",
+                                        "example": "Berapa 1 + 2?"
+                                    },
+                                    "answer": {
+                                        "type": "string",
+                                        "example": "C"
+                                    },
+                                    "a": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "b": {
+                                        "type": "string",
+                                        "example": "2"
+                                    },
+                                    "c": {
+                                        "type": "string",
+                                        "example": "3"
+                                    },
+                                    "d": {
+                                        "type": "string",
+                                        "example": "4"
+                                    },
+                                    "e": {
+                                        "type": "string",
+                                        "example": "5"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengupdate soal"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Module Questions"
+                ],
+                "summary": "Hapus soal untuk quiz pada modul (Admin)",
+                "description": "Menghapus soal quiz pada modul",
+                "operationId": "adminModuleQuestionDestroy",
+                "parameters": [
+                    {
+                        "name": "module_question",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menghapus soal"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/module-tasks/{module}": {
+            "post": {
+                "tags": [
+                    "Admin - Module Tasks"
+                ],
+                "summary": "Tambah tugas pada modul (Admin)",
+                "description": "Menambahkan tugas baru pada sebuah modul",
+                "operationId": "adminModuleTaskStore",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "question": {
+                                        "type": "string",
+                                        "example": "Jelaskan apa yang dimaksud dengan..."
+                                    },
+                                    "is_link": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "is_file": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menambahkan tugas"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/module-tasks/{module_task}": {
+            "get": {
+                "tags": [
+                    "Admin - Module Tasks"
+                ],
+                "summary": "Detail tugas pada modul (Admin)",
+                "description": "Melihat detail tugas",
+                "operationId": "adminModuleTaskShow",
+                "parameters": [
+                    {
+                        "name": "module_task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil detail tugas"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin - Module Tasks"
+                ],
+                "summary": "Edit tugas pada modul (Admin)",
+                "description": "Mengedit data tugas",
+                "operationId": "adminModuleTaskUpdate",
+                "parameters": [
+                    {
+                        "name": "module_task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "question": {
+                                        "type": "string",
+                                        "example": "Jelaskan kembali apa yang dimaksud dengan..."
+                                    },
+                                    "is_link": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "is_file": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengupdate tugas"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Module Tasks"
+                ],
+                "summary": "Hapus tugas pada modul (Admin)",
+                "description": "Menghapus tugas",
+                "operationId": "adminModuleTaskDestroy",
+                "parameters": [
+                    {
+                        "name": "module_task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menghapus tugas"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/quizzes/{module}": {
+            "post": {
+                "tags": [
+                    "Admin - Quizzes"
+                ],
+                "summary": "Pengaturan quiz pada modul (tambah/edit) (Admin)",
+                "description": "Menambahkan atau mengedit pengaturan quiz pada modul",
+                "operationId": "adminQuizStore",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "minimum_score": {
+                                        "type": "integer",
+                                        "example": 75
+                                    },
+                                    "duration": {
+                                        "type": "integer",
+                                        "example": 30
+                                    },
+                                    "max_attempts": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengatur quiz"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/quizzes/{quiz}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Pembuka kuis (informasi terkait pengerjaan kuis & berisi riwayat pengerjaan kuis karna bisa saja remidi)",
+                "description": "Menampilkan informasi sebelum memulai kuis beserta riwayatnya",
+                "operationId": "quizInformation",
+                "parameters": [
+                    {
+                        "name": "quiz",
+                        "in": "path",
+                        "description": "Quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Informasi kuis",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Quiz information"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Pengerjaan kuis",
+                "description": "Mengirimkan jawaban kuis",
+                "operationId": "submitQuiz",
+                "parameters": [
+                    {
+                        "name": "quiz",
+                        "in": "path",
+                        "description": "Quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "answers"
+                                ],
+                                "properties": {
+                                    "answers": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "question_id": {
+                                                    "type": "string",
+                                                    "example": "uuid-question"
+                                                },
+                                                "answer_id": {
+                                                    "type": "string",
+                                                    "example": "uuid-answer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Kuis berhasil disubmit",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submit quiz"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Quizzes"
+                ],
+                "summary": "Hapus quiz pada modul (Admin)",
+                "description": "Merubah ulang atau menghapus quiz pada modul",
+                "operationId": "adminQuizDestroy",
+                "parameters": [
+                    {
+                        "name": "quiz",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menghapus quiz"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/sub-modules/{module}": {
+            "post": {
+                "tags": [
+                    "Admin - Sub Modules"
+                ],
+                "summary": "Tambah materi pada modul (Admin)",
+                "description": "Menambahkan materi baru pada sebuah modul",
+                "operationId": "adminSubModuleStore",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Materi 1"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "<p>Konten materi...</p>"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menambahkan materi"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/sub-modules-update/{sub_module}": {
+            "post": {
+                "tags": [
+                    "Admin - Sub Modules"
+                ],
+                "summary": "Edit materi pada modul (Admin)",
+                "description": "Mengedit data materi",
+                "operationId": "adminSubModuleUpdate",
+                "parameters": [
+                    {
+                        "name": "sub_module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Materi 1 Revisi"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "<p>Konten materi revisi...</p>"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengupdate materi"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/sub-modules/detail/{slug}": {
+            "get": {
+                "tags": [
+                    "Admin - Sub Modules"
+                ],
+                "summary": "Detail materi pada modul (Admin)",
+                "description": "Melihat detail materi",
+                "operationId": "adminSubModuleShow",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil detail materi"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/sub-modules/{sub_module}": {
+            "delete": {
+                "tags": [
+                    "Admin - Sub Modules"
+                ],
+                "summary": "Hapus materi pada modul (Admin)",
+                "description": "Menghapus materi dari sistem",
+                "operationId": "adminSubModuleDestroy",
+                "parameters": [
+                    {
+                        "name": "sub_module",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil menghapus materi"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/module-task/{module_task}/submissions": {
+            "get": {
+                "tags": [
+                    "Admin - Module Tasks"
+                ],
+                "summary": "Daftar pengumpulan tugas pada modul (Admin)",
+                "description": "Melihat daftar user yang telah mengumpulkan tugas",
+                "operationId": "adminSubmissionTaskIndex",
+                "parameters": [
+                    {
+                        "name": "module_task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil daftar pengumpulan tugas"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/user-course-tests": {
+            "get": {
+                "tags": [
+                    "Admin - User Course Tests"
+                ],
+                "summary": "Riwayat pengerjaan test user (Admin)",
+                "description": "Melihat daftar riwayat pengerjaan test oleh user",
+                "operationId": "adminUserCourseTestIndex",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil riwayat test"
                     }
                 },
                 "security": [
@@ -1205,123 +2696,6 @@
                 ]
             }
         },
-        "/api/quizzes/{quiz}": {
-            "get": {
-                "tags": [
-                    "Guest Learning & Checkout"
-                ],
-                "summary": "Pembuka kuis (informasi terkait pengerjaan kuis & berisi riwayat pengerjaan kuis karna bisa saja remidi)",
-                "description": "Menampilkan informasi sebelum memulai kuis beserta riwayatnya",
-                "operationId": "quizInformation",
-                "parameters": [
-                    {
-                        "name": "quiz",
-                        "in": "path",
-                        "description": "Quiz ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Informasi kuis",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Quiz information"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Guest Learning & Checkout"
-                ],
-                "summary": "Pengerjaan kuis",
-                "description": "Mengirimkan jawaban kuis",
-                "operationId": "submitQuiz",
-                "parameters": [
-                    {
-                        "name": "quiz",
-                        "in": "path",
-                        "description": "Quiz ID",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "answers"
-                                ],
-                                "properties": {
-                                    "answers": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "question_id": {
-                                                    "type": "string",
-                                                    "example": "uuid-question"
-                                                },
-                                                "answer_id": {
-                                                    "type": "string",
-                                                    "example": "uuid-answer"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Kuis berhasil disubmit",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Submit quiz"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
         "/api/quizzes/result/{quiz}": {
             "get": {
                 "tags": [
@@ -1383,6 +2757,38 @@
         {
             "name": "Admin - Courses",
             "description": "Admin - Courses"
+        },
+        {
+            "name": "Admin - Course Tests",
+            "description": "Admin - Course Tests"
+        },
+        {
+            "name": "Admin - Course Vouchers",
+            "description": "Admin - Course Vouchers"
+        },
+        {
+            "name": "Admin - Modules",
+            "description": "Admin - Modules"
+        },
+        {
+            "name": "Admin - Module Questions",
+            "description": "Admin - Module Questions"
+        },
+        {
+            "name": "Admin - Module Tasks",
+            "description": "Admin - Module Tasks"
+        },
+        {
+            "name": "Admin - Quizzes",
+            "description": "Admin - Quizzes"
+        },
+        {
+            "name": "Admin - Sub Modules",
+            "description": "Admin - Sub Modules"
+        },
+        {
+            "name": "Admin - User Course Tests",
+            "description": "Admin - User Course Tests"
         },
         {
             "name": "Guest Learning & Checkout",

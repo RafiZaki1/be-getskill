@@ -13,6 +13,7 @@ use App\Models\ModuleQuestion;
 use App\Traits\PaginationTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
 class ModuleQuestionController extends Controller
 {
@@ -55,14 +56,30 @@ class ModuleQuestionController extends Controller
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
     }
-    /**
-     * Method store
-     *
-     * @param ModuleQuestionRequest $request [explicite description]
-     * @param Module $module [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Post(
+        path: "/api/module-questions/{module}",
+        operationId: "adminModuleQuestionStore",
+        summary: "Tambah soal untuk quiz pada modul (Admin)",
+        description: "Menambahkan soal baru untuk kuis dalam sebuah modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Module Questions"]
+    )]
+    #[OA\Parameter(name: "module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "question", type: "string", example: "Berapa 1 + 1?"),
+                new OA\Property(property: "answer", type: "string", example: "A"),
+                new OA\Property(property: "a", type: "string", example: "1"),
+                new OA\Property(property: "b", type: "string", example: "2"),
+                new OA\Property(property: "c", type: "string", example: "3"),
+                new OA\Property(property: "d", type: "string", example: "4"),
+                new OA\Property(property: "e", type: "string", example: "5")
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil menambahkan soal")]
     public function store(ModuleQuestionRequest $request, Module $module): JsonResponse
     {
         try {
@@ -95,14 +112,30 @@ class ModuleQuestionController extends Controller
         }
     }
 
-    /**
-     * Method update
-     *
-     * @param ModuleQuestionRequest $request [explicite description]
-     * @param ModuleQuestion $moduleQuestion [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Put(
+        path: "/api/module-questions/{module_question}",
+        operationId: "adminModuleQuestionUpdate",
+        summary: "Edit soal untuk quiz pada modul (Admin)",
+        description: "Mengedit soal quiz pada modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Module Questions"]
+    )]
+    #[OA\Parameter(name: "module_question", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "question", type: "string", example: "Berapa 1 + 2?"),
+                new OA\Property(property: "answer", type: "string", example: "C"),
+                new OA\Property(property: "a", type: "string", example: "1"),
+                new OA\Property(property: "b", type: "string", example: "2"),
+                new OA\Property(property: "c", type: "string", example: "3"),
+                new OA\Property(property: "d", type: "string", example: "4"),
+                new OA\Property(property: "e", type: "string", example: "5")
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil mengupdate soal")]
     public function update(ModuleQuestionRequest $request, ModuleQuestion $moduleQuestion): JsonResponse
     {
         try {
@@ -114,13 +147,17 @@ class ModuleQuestionController extends Controller
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
     }
-    /**
-     * Method destroy
-     *
-     * @param ModuleQuestion $moduleQuestion [explicite description]
-     *
-     * @return JsonResponse
-     */
+
+    #[OA\Delete(
+        path: "/api/module-questions/{module_question}",
+        operationId: "adminModuleQuestionDestroy",
+        summary: "Hapus soal untuk quiz pada modul (Admin)",
+        description: "Menghapus soal quiz pada modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Module Questions"]
+    )]
+    #[OA\Parameter(name: "module_question", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil menghapus soal")]
     public function destroy(ModuleQuestion $moduleQuestion): JsonResponse
     {
         try {

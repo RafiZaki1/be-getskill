@@ -15,6 +15,7 @@ use App\Services\UserCourseTestService;
 use App\Traits\PaginationTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
 class UserCourseTestController extends Controller
 {
@@ -28,11 +29,15 @@ class UserCourseTestController extends Controller
         $this->service = $service;
         $this->course = $course;
     }
-    /**
-     * Method index
-     *
-     * @return JsonResponse
-     */
+    #[OA\Get(
+        path: "/api/user-course-tests",
+        operationId: "adminUserCourseTestIndex",
+        summary: "Riwayat pengerjaan test user (Admin)",
+        description: "Melihat daftar riwayat pengerjaan test oleh user",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - User Course Tests"]
+    )]
+    #[OA\Response(response: 200, description: "Berhasil mengambil riwayat test")]
     public function index(Request $request): JsonResponse
     {
         $userCourseTests = $this->userCourseTest->customPaginate($request);

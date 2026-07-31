@@ -22,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
+use OpenApi\Attributes as OA;
 
 class ModuleTaskController extends Controller
 {
@@ -63,14 +64,26 @@ class ModuleTaskController extends Controller
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
     }
-    /**
-     * Method store
-     *
-     * @param ModuleTaskRequest $request [explicite description]
-     * @param Module $module [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Post(
+        path: "/api/module-tasks/{module}",
+        operationId: "adminModuleTaskStore",
+        summary: "Tambah tugas pada modul (Admin)",
+        description: "Menambahkan tugas baru pada sebuah modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Module Tasks"]
+    )]
+    #[OA\Parameter(name: "module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "question", type: "string", example: "Jelaskan apa yang dimaksud dengan..."),
+                new OA\Property(property: "is_link", type: "boolean", example: true),
+                new OA\Property(property: "is_file", type: "boolean", example: true)
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil menambahkan tugas")]
     public function store(ModuleTaskRequest $request, Module $module): JsonResponse
     {
         $data = $request->validated();
@@ -87,13 +100,17 @@ class ModuleTaskController extends Controller
             return ResponseHelper::error(null, 'Terjadi kesalahan saat menyimpan tugas. ' . $th->getMessage());
         }
     }
-    /**
-     * Method show
-     *
-     * @param ModuleTask $moduleTask [explicite description]
-     *
-     * @return JsonResponse
-     */
+
+    #[OA\Get(
+        path: "/api/module-tasks/{module_task}",
+        operationId: "adminModuleTaskShow",
+        summary: "Detail tugas pada modul (Admin)",
+        description: "Melihat detail tugas",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Module Tasks"]
+    )]
+    #[OA\Parameter(name: "module_task", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil mengambil detail tugas")]
     public function show(Request $request, ModuleTask $moduleTask): JsonResponse
     {
         try {
@@ -150,14 +167,26 @@ class ModuleTaskController extends Controller
         }
     }
 
-    /**
-     * Method update
-     *
-     * @param ModuleTaskRequest $request [explicite description]
-     * @param ModuleTask $moduleTask [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Put(
+        path: "/api/module-tasks/{module_task}",
+        operationId: "adminModuleTaskUpdate",
+        summary: "Edit tugas pada modul (Admin)",
+        description: "Mengedit data tugas",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Module Tasks"]
+    )]
+    #[OA\Parameter(name: "module_task", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "question", type: "string", example: "Jelaskan kembali apa yang dimaksud dengan..."),
+                new OA\Property(property: "is_link", type: "boolean", example: true),
+                new OA\Property(property: "is_file", type: "boolean", example: false)
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil mengupdate tugas")]
     public function update(ModuleTaskRequest $request, ModuleTask $moduleTask): JsonResponse
     {
         $data = $request->validated();
@@ -173,13 +202,17 @@ class ModuleTaskController extends Controller
             return ResponseHelper::error(null, 'Terjadi kesalahan saat memperbarui tugas. ' . $th->getMessage());
         }
     }
-    /**
-     * Method destroy
-     *
-     * @param ModuleTask $moduleTask [explicite description]
-     *
-     * @return JsonResponse
-     */
+
+    #[OA\Delete(
+        path: "/api/module-tasks/{module_task}",
+        operationId: "adminModuleTaskDestroy",
+        summary: "Hapus tugas pada modul (Admin)",
+        description: "Menghapus tugas",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Module Tasks"]
+    )]
+    #[OA\Parameter(name: "module_task", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil menghapus tugas")]
     public function destroy(ModuleTask $moduleTask): JsonResponse
     {
         try {

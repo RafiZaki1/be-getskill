@@ -22,6 +22,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use OpenApi\Attributes as OA;
 
 class SubModuleController extends Controller
 {
@@ -40,13 +41,25 @@ class SubModuleController extends Controller
         $this->module = $module;
     }
 
-    /**
-     * Method store
-     *
-     * @param SubModuleRequest $request [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Post(
+        path: "/api/sub-modules/{module}",
+        operationId: "adminSubModuleStore",
+        summary: "Tambah materi pada modul (Admin)",
+        description: "Menambahkan materi baru pada sebuah modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Sub Modules"]
+    )]
+    #[OA\Parameter(name: "module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "title", type: "string", example: "Materi 1"),
+                new OA\Property(property: "content", type: "string", example: "<p>Konten materi...</p>")
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil menambahkan materi")]
     public function store(SubModuleRequest $request, Module $module): JsonResponse
     {
         try {
@@ -75,14 +88,25 @@ class SubModuleController extends Controller
         }
     }
 
-    /**
-     * Method update
-     *
-     * @param SubModuleRequest $request [explicite description]
-     * @param SubModule $subModule [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Post(
+        path: "/api/sub-modules-update/{sub_module}",
+        operationId: "adminSubModuleUpdate",
+        summary: "Edit materi pada modul (Admin)",
+        description: "Mengedit data materi",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Sub Modules"]
+    )]
+    #[OA\Parameter(name: "sub_module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "title", type: "string", example: "Materi 1 Revisi"),
+                new OA\Property(property: "content", type: "string", example: "<p>Konten materi revisi...</p>")
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil mengupdate materi")]
     public function update(SubModuleRequest $request, SubModule $subModule): JsonResponse
     {
         try {
@@ -154,13 +178,16 @@ class SubModuleController extends Controller
         }
     }
 
-    /**
-     * Method show
-     *
-     * @param string $slug [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Get(
+        path: "/api/sub-modules/detail/{slug}",
+        operationId: "adminSubModuleShow",
+        summary: "Detail materi pada modul (Admin)",
+        description: "Melihat detail materi",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Sub Modules"]
+    )]
+    #[OA\Parameter(name: "slug", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil mengambil detail materi")]
     public function show(string $slug): JsonResponse
     {
         try {
@@ -206,13 +233,16 @@ class SubModuleController extends Controller
         }
     }
 
-    /**
-     * Method destroy
-     *
-     * @param SubModule $subModule [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Delete(
+        path: "/api/sub-modules/{sub_module}",
+        operationId: "adminSubModuleDestroy",
+        summary: "Hapus materi pada modul (Admin)",
+        description: "Menghapus materi dari sistem",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Sub Modules"]
+    )]
+    #[OA\Parameter(name: "sub_module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil menghapus materi")]
     public function destroy(SubModule $subModule): JsonResponse
     {
         try {

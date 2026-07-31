@@ -123,8 +123,8 @@ class AuthController extends Controller
     #[OA\Post(
         path: "/api/login",
         operationId: "authLogin",
-        summary: "Login ke aplikasi",
-        description: "Login untuk mendapatkan token akses",
+        summary: "Login ke aplikasi (HTTP Only Cookie)",
+        description: "Login dan mendapatkan token di dalam HTTP-Only Cookie",
         tags: ["Auth"]
     )]
     #[OA\RequestBody(
@@ -139,16 +139,22 @@ class AuthController extends Controller
     )]
     #[OA\Response(
         response: 200,
-        description: "Login berhasil",
+        description: "Login berhasil, token akan diset di Set-Cookie headers",
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: "data", type: "object", properties: [
-                    new OA\Property(property: "user", type: "object"),
-                    new OA\Property(property: "token", type: "string", example: "1|xxx...")
+                    new OA\Property(property: "user", type: "object")
                 ]),
                 new OA\Property(property: "message", type: "string", example: "Berhasil login")
             ]
-        )
+        ),
+        headers: [
+            new OA\Header(
+                header: "Set-Cookie",
+                description: "Berisi access_token yang HTTP-Only",
+                schema: new OA\Schema(type: "string")
+            )
+        ]
     )]
     #[OA\Response(response: 401, description: "Kredensial tidak valid")]
     #[OA\Response(response: 403, description: "Email belum diverifikasi")]
@@ -168,10 +174,12 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            return \App\Helpers\ResponseHelper::success([
-                'user' => $user,
-                'token' => $token,
-            ], 'Berhasil login');
+            return response()->json([
+                'data' => ['user' => $user],
+                'message' => 'Berhasil login'
+            ], 200)->cookie(
+                'access_token', $token, 60*24, null, null, false, true
+            );
         }
 
         return response()->json([

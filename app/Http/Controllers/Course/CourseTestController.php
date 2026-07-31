@@ -35,6 +35,7 @@ use App\Contracts\Repositories\Course\UserCourseRepository;
 use App\Helpers\CourcePercentaceHelper;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use OpenApi\Attributes as OA;
 
 class CourseTestController extends Controller
 {
@@ -265,13 +266,27 @@ class CourseTestController extends Controller
         }
     }
 
-    /**
-     * store
-     *
-     * @param  mixed $request
-     * @param  mixed $slug
-     * @return JsonResponse
-     */
+    #[OA\Post(
+        path: "/api/course-tests/{slug}",
+        operationId: "adminCourseTestStore",
+        summary: "Pengaturan test untuk pre-test dan post-test (Admin)",
+        description: "Menambahkan pengaturan test (pre-test/post-test)",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Course Tests"]
+    )]
+    #[OA\Parameter(name: "slug", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "duration", type: "integer", example: 60),
+                new OA\Property(property: "min_score", type: "integer", example: 80),
+                new OA\Property(property: "question_count", type: "array", items: new OA\Items(type: "integer"), example: [5, 10]),
+                new OA\Property(property: "module_id", type: "array", items: new OA\Items(type: "string"), example: ["uuid1", "uuid2"])
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil menambahkan test")]
     public function store(CourseTestRequest $request, string $slug): mixed
     {
         try {
@@ -310,14 +325,25 @@ class CourseTestController extends Controller
         }
     }
 
-    /**
-     * Method update
-     *
-     * @param CourseTestRequest $request [explicite description]
-     * @param CourseTest $courseTest [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Put(
+        path: "/api/course-tests/{course_test}",
+        operationId: "adminCourseTestUpdate",
+        summary: "Edit pengaturan test (Admin)",
+        description: "Mengedit pengaturan pre-test / post-test",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Course Tests"]
+    )]
+    #[OA\Parameter(name: "course_test", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "duration", type: "integer", example: 45),
+                new OA\Property(property: "min_score", type: "integer", example: 75)
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil mengupdate test")]
     public function update(CourseTestRequest $request, CourseTest $courseTest): JsonResponse
     {
         try {
@@ -330,13 +356,16 @@ class CourseTestController extends Controller
         }
     }
 
-    /**
-     * Method destroy
-     *
-     * @param CourseTest $courseTest [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Delete(
+        path: "/api/course-tests/{course_test}",
+        operationId: "adminCourseTestDestroy",
+        summary: "Hapus test (Admin)",
+        description: "Menghapus pengaturan test",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Course Tests"]
+    )]
+    #[OA\Parameter(name: "course_test", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil menghapus test")]
     public function destroy(CourseTest $courseTest): JsonResponse
     {
         try {

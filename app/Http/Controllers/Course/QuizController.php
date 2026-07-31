@@ -23,6 +23,7 @@ use App\Traits\PaginationTrait;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 
 class QuizController extends Controller
 {
@@ -155,14 +156,26 @@ class QuizController extends Controller
             return ResponseHelper::error(null, trans(null, trans('alert.fetch_failed') . '. ' . $th->getMessage()));
         }
     }
-    /**
-     * Method store
-     *
-     * @param QuizRequest $request [explicite description]
-     * @param Module $module [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Post(
+        path: "/api/quizzes/{module}",
+        operationId: "adminQuizStore",
+        summary: "Pengaturan quiz pada modul (tambah/edit) (Admin)",
+        description: "Menambahkan atau mengedit pengaturan quiz pada modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Quizzes"]
+    )]
+    #[OA\Parameter(name: "module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "minimum_score", type: "integer", example: 75),
+                new OA\Property(property: "duration", type: "integer", example: 30),
+                new OA\Property(property: "max_attempts", type: "integer", example: 3)
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil mengatur quiz")]
     public function store(QuizRequest $request, Module $module): JsonResponse
     {
         $data = $request->validated();
@@ -184,13 +197,17 @@ class QuizController extends Controller
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
     }
-    /**
-     * Method destroy
-     *
-     * @param Quiz $quiz [explicite description]
-     *
-     * @return JsonResponse
-     */
+    
+    #[OA\Delete(
+        path: "/api/quizzes/{quiz}",
+        operationId: "adminQuizDestroy",
+        summary: "Hapus quiz pada modul (Admin)",
+        description: "Merubah ulang atau menghapus quiz pada modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Quizzes"]
+    )]
+    #[OA\Parameter(name: "quiz", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil menghapus quiz")]
     public function destroy(Quiz $quiz): JsonResponse
     {
         try {

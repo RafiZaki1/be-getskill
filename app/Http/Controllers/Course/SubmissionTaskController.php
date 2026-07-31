@@ -19,6 +19,7 @@ use App\Http\Resources\SubmissionTaskResource;
 use App\Http\Resources\ShowSubmissionTaskResource;
 use App\Contracts\Interfaces\Course\SubmissionTaskInterface;
 use App\Models\Module;
+use OpenApi\Attributes as OA;
 
 class SubmissionTaskController extends Controller
 {
@@ -36,13 +37,16 @@ class SubmissionTaskController extends Controller
         $this->submissionTask = $submissionTask;
         $this->service = $service;
     }
-    /**
-     * Method index
-     *
-     * @param ModuleTask $moduleTask [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Get(
+        path: "/api/module-task/{module_task}/submissions",
+        operationId: "adminSubmissionTaskIndex",
+        summary: "Daftar pengumpulan tugas pada modul (Admin)",
+        description: "Melihat daftar user yang telah mengumpulkan tugas",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Module Tasks"]
+    )]
+    #[OA\Parameter(name: "module_task", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil mengambil daftar pengumpulan tugas")]
     public function index(ModuleTask $moduleTask, Request $request): JsonResponse
     {
         try {

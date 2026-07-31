@@ -236,6 +236,16 @@ class CourseController extends Controller
             return ResponseHelper::error(true, trans('alert.delete_constrained'));
         }
     }
+    #[OA\Get(
+        path: "/api/course-statistic/{slug}",
+        operationId: "adminCourseStatistic",
+        summary: "Statistik pembelian pada kursus (Admin)",
+        description: "Melihat statistik terkait kursus",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Courses"]
+    )]
+    #[OA\Parameter(name: "slug", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil mengambil statistik kursus")]
     public function statistic(Request $request, string $slug): JsonResponse
     {
         try {
@@ -273,13 +283,18 @@ class CourseController extends Controller
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
     }
-    /**
-     * Method readyToUse
-     *
-     * @param Course $course [explicite description]
-     *
-     * @return JsonResponse
-     */
+    
+    #[OA\Patch(
+        path: "/api/courses-ready/{course}",
+        operationId: "adminCoursePublish",
+        summary: "Publish kursus (Admin)",
+        description: "Mempublish kursus agar dapat diakses",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Courses"]
+    )]
+    #[OA\Parameter(name: "course", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil mempublish kursus")]
+    #[OA\Response(response: 422, description: "Belum ada sub modul atau test pada kursus ini")]
     public function readyToUse(Course $course): JsonResponse
     {
         try {
@@ -298,13 +313,16 @@ class CourseController extends Controller
         }
     }
 
-    /*
-     * Method makeDraft
-     *
-     * @param Course $course 
-     *
-     * @return JsonResponse
-     */
+    #[OA\Patch(
+        path: "/api/courses-make-draft/{course}",
+        operationId: "adminCourseUnpublish",
+        summary: "Unpublish kursus (Admin)",
+        description: "Menjadikan kursus sebagai draft / unpublish",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Courses"]
+    )]
+    #[OA\Parameter(name: "course", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil unpublish kursus")]
     public function makeDraft(Course $course): JsonResponse
     {
         try {
@@ -428,11 +446,16 @@ class CourseController extends Controller
         }
     }
 
-    /**
-     * Arrange course's modules by step
-     *
-     * @param Course $course
-     */
+    #[OA\Put(
+        path: "/api/course/{course}/arrange-modules",
+        operationId: "adminCourseArrangeModules",
+        summary: "Mengubah urutan modul kursus (Admin)",
+        description: "Mengatur ulang urutan modul di dalam sebuah kursus",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Courses"]
+    )]
+    #[OA\Parameter(name: "course", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil mengatur urutan modul")]
     public function arrangeModules(Course $course)
     {
         DB::beginTransaction();

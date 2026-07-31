@@ -24,6 +24,7 @@ use App\Http\Resources\Course\CourseModuleListResource;
 use App\Contracts\Interfaces\Course\ModuleTaskInterface;
 use App\Http\Resources\Course\CourseModuleSimpleResource;
 use Illuminate\Support\Facades\DB;
+use OpenApi\Attributes as OA;
 
 class ModuleController extends Controller
 {
@@ -105,13 +106,25 @@ class ModuleController extends Controller
             return ResponseHelper::error(null, trans('alert.fetch_failed') . '. ' . $th->getMessage());
         }
     }
-    /**
-     * Method store
-     *
-     * @param ModuleRequest $request [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Post(
+        path: "/api/modules/{slug}",
+        operationId: "adminModuleStore",
+        summary: "Tambah modul kursus (Admin)",
+        description: "Menambahkan modul baru pada sebuah kursus berdasarkan slug",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Modules"]
+    )]
+    #[OA\Parameter(name: "slug", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "title", type: "string", example: "Pendahuluan"),
+                new OA\Property(property: "description", type: "string", example: "Deskripsi modul")
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil menambahkan modul")]
     public function store(string $slug, ModuleRequest $request): JsonResponse
     {
         try {
@@ -130,13 +143,16 @@ class ModuleController extends Controller
         }
     }
 
-    /**
-     * Method show
-     *
-     * @param Module $module [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Get(
+        path: "/api/modules/detail/{module}",
+        operationId: "adminModuleShow",
+        summary: "Detail modul kursus (Admin)",
+        description: "Melihat detail modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Modules"]
+    )]
+    #[OA\Parameter(name: "module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil mengambil detail modul")]
     public function show(Module $module): JsonResponse
     {
         try {
@@ -168,14 +184,25 @@ class ModuleController extends Controller
         }
     }
 
-    /**
-     * Method update
-     *
-     * @param ModuleRequest $request [explicite description]
-     * @param Module $module [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Put(
+        path: "/api/modules/{module}",
+        operationId: "adminModuleUpdate",
+        summary: "Edit modul kursus (Admin)",
+        description: "Mengedit data modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Modules"]
+    )]
+    #[OA\Parameter(name: "module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "title", type: "string", example: "Pendahuluan Revisi"),
+                new OA\Property(property: "description", type: "string", example: "Deskripsi modul revisi")
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Berhasil mengupdate modul")]
     public function update(ModuleRequest $request, Module $module): JsonResponse
     {
         try {
@@ -187,13 +214,17 @@ class ModuleController extends Controller
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
     }
-    /**
-     * Method destroy
-     *
-     * @param Module $module [explicite description]
-     *
-     * @return JsonResponse
-     */
+
+    #[OA\Delete(
+        path: "/api/modules/{module}",
+        operationId: "adminModuleDestroy",
+        summary: "Hapus modul kursus (Admin)",
+        description: "Menghapus modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Modules"]
+    )]
+    #[OA\Parameter(name: "module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil menghapus modul")]
     public function destroy(Module $module): JsonResponse
     {
         try {
@@ -318,11 +349,16 @@ class ModuleController extends Controller
         }
     }
 
-    /**
-     * Arrange module's sub modules by step
-     *
-     * @param Module $Module
-     */
+    #[OA\Put(
+        path: "/api/module/{module}/arrange-submodules",
+        operationId: "adminModuleArrangeSubModules",
+        summary: "Mengubah urutan materi pada modul (Admin)",
+        description: "Mengatur ulang urutan materi (sub modul) di dalam sebuah modul",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Modules"]
+    )]
+    #[OA\Parameter(name: "module", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Berhasil mengatur urutan materi sub modul")]
     public function arrangeSubModules(Module $module)
     {
         DB::beginTransaction();
