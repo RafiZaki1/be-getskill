@@ -1,0 +1,1392 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Manajemen Kursus & Perencanaan API",
+        "description": "L5 Swagger API documentation for Manajemen Kursus",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register user baru",
+                "description": "Mendaftarkan user baru dan mengirimkan kode OTP ke email",
+                "operationId": "authRegister",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Registrasi berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User registered successfully. Please check your email for the OTP."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/verify-otp": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verifikasi OTP",
+                "description": "Memverifikasi akun menggunakan OTP yang dikirim ke email",
+                "operationId": "authVerifyOtp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "otp_code"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "otp_code": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Verifikasi berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email verified successfully. You can now login."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login ke aplikasi",
+                "description": "Login untuk mendapatkan token akses",
+                "operationId": "authLogin",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "type": "object"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|xxx..."
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Berhasil login"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Kredensial tidak valid"
+                    },
+                    "403": {
+                        "description": "Email belum diverifikasi"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout dari aplikasi",
+                "description": "Menghapus token akses saat ini",
+                "operationId": "authLogout",
+                "responses": {
+                    "200": {
+                        "description": "Logout berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/courses": {
+            "get": {
+                "tags": [
+                    "Admin - Courses"
+                ],
+                "summary": "List semua kursus (Admin)",
+                "description": "Mendapatkan daftar semua kursus untuk keperluan admin",
+                "operationId": "getAdminCourses",
+                "responses": {
+                    "200": {
+                        "description": "Berhasil mengambil data kursus",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin - Courses"
+                ],
+                "summary": "Buat kursus baru (Admin)",
+                "description": "Menyimpan data kursus baru",
+                "operationId": "storeAdminCourse",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Kursus Laravel Dasar"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Deskripsi kursus"
+                                    },
+                                    "price": {
+                                        "type": "integer",
+                                        "example": 100000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Kursus berhasil ditambahkan"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/courses/{slug}": {
+            "get": {
+                "tags": [
+                    "Admin - Courses"
+                ],
+                "summary": "Detail kursus (Admin)",
+                "description": "Melihat detail kursus berdasarkan slug",
+                "operationId": "showAdminCourse",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail kursus berhasil diambil"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/courses/{course}": {
+            "put": {
+                "tags": [
+                    "Admin - Courses"
+                ],
+                "summary": "Update kursus (Admin)",
+                "description": "Mengubah data kursus yang ada",
+                "operationId": "updateAdminCourse",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Kursus Laravel Update"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Deskripsi update"
+                                    },
+                                    "price": {
+                                        "type": "integer",
+                                        "example": 120000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Kursus berhasil diupdate"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin - Courses"
+                ],
+                "summary": "Hapus kursus (Admin)",
+                "description": "Menghapus data kursus",
+                "operationId": "deleteAdminCourse",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kursus berhasil dihapus"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/certificates/verify-name": {
+            "post": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Verifikasi nama untuk klaim sertifikat kursus",
+                "description": "Memverifikasi nama user sebelum mencetak sertifikat",
+                "operationId": "verifyCertificateName",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name_on_certificate"
+                                ],
+                                "properties": {
+                                    "name_on_certificate": {
+                                        "type": "string",
+                                        "example": "Rafi Zaki"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Nama terverifikasi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Verify certificate name"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/certificates/download/{code}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Download sertifikat kursus",
+                "description": "Mengunduh file sertifikat kursus",
+                "operationId": "downloadCertificate",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "Certificate Code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File Sertifikat",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Download certificate"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/checkout": {
+            "post": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Checkout kursus (pilih metode pembayaran)",
+                "description": "Membuat transaksi baru untuk pembelian kursus",
+                "operationId": "checkoutCourse",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "course_id",
+                                    "payment_method"
+                                ],
+                                "properties": {
+                                    "course_id": {
+                                        "type": "string",
+                                        "example": "uuid-course"
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "example": "bank_transfer"
+                                    },
+                                    "bank_code": {
+                                        "type": "string",
+                                        "example": "BCA"
+                                    },
+                                    "voucher_code": {
+                                        "type": "string",
+                                        "example": "PROMO2026"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Checkout berhasil dilakukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Checkout course"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/checkout/status/{transaction}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Cek status pembayaran pembelian kursus",
+                "description": "Mengecek status pembayaran untuk transaksi tertentu",
+                "operationId": "checkCheckoutStatus",
+                "parameters": [
+                    {
+                        "name": "transaction",
+                        "in": "path",
+                        "description": "Transaction ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status pembayaran",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Check payment status"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/checkout/cancel/{transaction}": {
+            "post": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Batalkan pembelian kursus",
+                "description": "Membatalkan transaksi pembelian kursus",
+                "operationId": "cancelCheckout",
+                "parameters": [
+                    {
+                        "name": "transaction",
+                        "in": "path",
+                        "description": "Transaction ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Salah pilih kursus"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Checkout berhasil dibatalkan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cancel checkout"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/modules/{module}/material": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Mempelajari materi pada setiap modul",
+                "description": "Menampilkan materi pelajaran untuk modul tertentu",
+                "operationId": "showModuleMaterial",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "description": "Module ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Materi Modul",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Module material"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/modules/{module}/tasks": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Daftar tugas pada modul",
+                "description": "Menampilkan daftar tugas untuk modul tertentu",
+                "operationId": "listModuleTasks",
+                "parameters": [
+                    {
+                        "name": "module",
+                        "in": "path",
+                        "description": "Module ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Daftar tugas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "List tasks"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/tasks/{task}/submit": {
+            "post": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Pengumpulan tugas pada modul (file & link)",
+                "description": "Mengumpulkan hasil tugas modul berupa file atau link",
+                "operationId": "submitModuleTask",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "Task ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "file": {
+                                        "description": "File tugas",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "link": {
+                                        "description": "Link tugas jika ada",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tugas berhasil dikumpulkan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submit task"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/tasks/submission/{submission}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Detail tugas apabila sudah mengumpulkan tugas pada modul (file & link)",
+                "description": "Menampilkan detail tugas yang sudah dikumpulkan",
+                "operationId": "showTaskSubmission",
+                "parameters": [
+                    {
+                        "name": "submission",
+                        "in": "path",
+                        "description": "Submission ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail pengumpulan tugas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Task submission detail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/post-test/{course}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Pembuka post-test (informasi terkait pengerjaan post-test)",
+                "description": "Menampilkan informasi sebelum memulai post-test",
+                "operationId": "postTestInformation",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course Slug/ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Informasi post-test",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post-test information"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Pengerjaan post-test",
+                "description": "Mengirimkan jawaban post-test",
+                "operationId": "submitPostTest",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course Slug/ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "answers"
+                                ],
+                                "properties": {
+                                    "answers": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "question_id": {
+                                                    "type": "string",
+                                                    "example": "uuid-question"
+                                                },
+                                                "answer_id": {
+                                                    "type": "string",
+                                                    "example": "uuid-answer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post-test berhasil disubmit",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submit post-test"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/post-test/result/{course}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Detail hasil pengerjaan post-test",
+                "description": "Melihat hasil pengerjaan post-test",
+                "operationId": "postTestResult",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course Slug/ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Hasil post-test",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post-test result"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/pre-test/{course}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Pembuka pre-test (informasi terkait pengerjaan pre-test)",
+                "description": "Menampilkan informasi sebelum memulai pre-test",
+                "operationId": "preTestInformation",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course Slug/ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Informasi pre-test",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pre-test information"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Pengerjaan pre-test",
+                "description": "Mengirimkan jawaban pre-test",
+                "operationId": "submitPreTest",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course Slug/ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "answers"
+                                ],
+                                "properties": {
+                                    "answers": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "question_id": {
+                                                    "type": "string",
+                                                    "example": "uuid-question"
+                                                },
+                                                "answer_id": {
+                                                    "type": "string",
+                                                    "example": "uuid-answer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pre-test berhasil disubmit",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submit pre-test"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/pre-test/result/{course}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Detail hasil pengerjaan pre-test",
+                "description": "Melihat hasil pengerjaan pre-test",
+                "operationId": "preTestResult",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "path",
+                        "description": "Course Slug/ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Hasil pre-test",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Pre-test result"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/quizzes/{quiz}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Pembuka kuis (informasi terkait pengerjaan kuis & berisi riwayat pengerjaan kuis karna bisa saja remidi)",
+                "description": "Menampilkan informasi sebelum memulai kuis beserta riwayatnya",
+                "operationId": "quizInformation",
+                "parameters": [
+                    {
+                        "name": "quiz",
+                        "in": "path",
+                        "description": "Quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Informasi kuis",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Quiz information"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Pengerjaan kuis",
+                "description": "Mengirimkan jawaban kuis",
+                "operationId": "submitQuiz",
+                "parameters": [
+                    {
+                        "name": "quiz",
+                        "in": "path",
+                        "description": "Quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "answers"
+                                ],
+                                "properties": {
+                                    "answers": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "question_id": {
+                                                    "type": "string",
+                                                    "example": "uuid-question"
+                                                },
+                                                "answer_id": {
+                                                    "type": "string",
+                                                    "example": "uuid-answer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Kuis berhasil disubmit",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Submit quiz"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/quizzes/result/{quiz}": {
+            "get": {
+                "tags": [
+                    "Guest Learning & Checkout"
+                ],
+                "summary": "Detail hasil pengerjaan kuis",
+                "description": "Melihat hasil pengerjaan kuis",
+                "operationId": "quizResult",
+                "parameters": [
+                    {
+                        "name": "quiz",
+                        "in": "path",
+                        "description": "Quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Hasil kuis",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Quiz result"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Admin - Courses",
+            "description": "Admin - Courses"
+        },
+        {
+            "name": "Guest Learning & Checkout",
+            "description": "Guest Learning & Checkout"
+        }
+    ]
+}

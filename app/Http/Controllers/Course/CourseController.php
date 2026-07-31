@@ -28,6 +28,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
+use OpenApi\Attributes as OA;
 
 class CourseController extends Controller
 {
@@ -71,6 +72,24 @@ class CourseController extends Controller
     }
 
 
+    #[OA\Get(
+        path: "/api/courses",
+        operationId: "getAdminCourses",
+        summary: "List semua kursus (Admin)",
+        description: "Mendapatkan daftar semua kursus untuk keperluan admin",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Courses"]
+    )]
+    #[OA\Response(
+        response: 200,
+        description: "Berhasil mengambil data kursus",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "data", type: "array", items: new OA\Items(type: "object")),
+                new OA\Property(property: "message", type: "string")
+            ]
+        )
+    )]
     public function index(Request $request): JsonResponse
     {
         try{
@@ -91,13 +110,25 @@ class CourseController extends Controller
         }
     }
 
-    /**
-     * Method store
-     *
-     * @param StoreCourseRequest $request [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Post(
+        path: "/api/courses",
+        operationId: "storeAdminCourse",
+        summary: "Buat kursus baru (Admin)",
+        description: "Menyimpan data kursus baru",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Courses"]
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "title", type: "string", example: "Kursus Laravel Dasar"),
+                new OA\Property(property: "description", type: "string", example: "Deskripsi kursus"),
+                new OA\Property(property: "price", type: "integer", example: 100000)
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Kursus berhasil ditambahkan")]
     public function store(StoreCourseRequest $request): JsonResponse
     {
         DB::beginTransaction();
@@ -113,13 +144,17 @@ class CourseController extends Controller
             return ResponseHelper::error(null, trans('alert.add_failed') . '. ' . $th->getMessage());
         }
     }
-    /**
-     * Method show
-     *
-     * @param Course $course [explicite description]
-     *
-     * @return JsonResponse
-     */
+
+    #[OA\Get(
+        path: "/api/courses/{slug}",
+        operationId: "showAdminCourse",
+        summary: "Detail kursus (Admin)",
+        description: "Melihat detail kursus berdasarkan slug",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Courses"]
+    )]
+    #[OA\Parameter(name: "slug", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Detail kursus berhasil diambil")]
     public function show(Request $request, string $slug): JsonResponse
     {
         try {
@@ -146,14 +181,26 @@ class CourseController extends Controller
         }
     }
 
-    /**
-     * Method update
-     *
-     * @param CourseUpdateRequest $request [explicite description]
-     * @param Course $course [explicite description]
-     *
-     * @return JsonResponse
-     */
+    #[OA\Put(
+        path: "/api/courses/{course}",
+        operationId: "updateAdminCourse",
+        summary: "Update kursus (Admin)",
+        description: "Mengubah data kursus yang ada",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Courses"]
+    )]
+    #[OA\Parameter(name: "course", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "title", type: "string", example: "Kursus Laravel Update"),
+                new OA\Property(property: "description", type: "string", example: "Deskripsi update"),
+                new OA\Property(property: "price", type: "integer", example: 120000)
+            ]
+        )
+    )]
+    #[OA\Response(response: 200, description: "Kursus berhasil diupdate")]
     public function update(CourseUpdateRequest $request, Course $course): JsonResponse
     {
         DB::beginTransaction();
@@ -169,13 +216,17 @@ class CourseController extends Controller
             return ResponseHelper::error(null, trans('alert.update_failed') . '. ' . $th->getMessage());
         }
     }
-    /**
-     * Method destroy
-     *
-     * @param Course $course [explicite description]
-     *
-     * @return JsonResponse
-     */
+
+    #[OA\Delete(
+        path: "/api/courses/{course}",
+        operationId: "deleteAdminCourse",
+        summary: "Hapus kursus (Admin)",
+        description: "Menghapus data kursus",
+        security: [["bearerAuth" => []]],
+        tags: ["Admin - Courses"]
+    )]
+    #[OA\Parameter(name: "course", in: "path", required: true, schema: new OA\Schema(type: "string"))]
+    #[OA\Response(response: 200, description: "Kursus berhasil dihapus")]
     public function destroy(Course $course): JsonResponse
     {
         try {
