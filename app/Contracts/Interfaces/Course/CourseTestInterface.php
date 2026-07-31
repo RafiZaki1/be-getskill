@@ -20,7 +20,5 @@ interface CourseTestInterface extends
     UpdateInterface,
     ShowSlugInterface
 {
-    public function getByTeacher(Request $request, mixed $id, int $pagination = 10): LengthAwarePaginator;
 
-    public function getByMentor(Request $request, mixed $id, int $pagination = 10): LengthAwarePaginator;
 }

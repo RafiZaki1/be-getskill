@@ -23,6 +23,9 @@ use App\Contracts\Interfaces\Course\ModuleTaskInterface;
 use App\Contracts\Interfaces\Course\SubmissionTaskInterface;
 use App\Contracts\Interfaces\Course\BankModuleInterface;
 use App\Contracts\Interfaces\Course\PostTestIdInterface;
+use App\Contracts\Interfaces\UserQuizInterface;
+use App\Contracts\Interfaces\UserCourseTestInterface;
+use App\Contracts\Interfaces\TransactionInterface;
 
 // Course repositories
 use App\Contracts\Repositories\Course\CourseRepository;
@@ -40,6 +43,9 @@ use App\Contracts\Repositories\Course\ModuleQuestionRepository;
 use App\Contracts\Repositories\Course\ModuleTaskRepository;
 use App\Contracts\Repositories\Course\SubmissionTaskRepository;
 use App\Contracts\Repositories\Course\BankModuleRepository;
+use App\Contracts\Repositories\UserQuizRepository;
+use App\Contracts\Repositories\UserCourseTestRepository;
+use App\Contracts\Repositories\TransactionRepository;
 
 // Services
 use App\Services\Course\CourseTestService;
@@ -64,6 +70,9 @@ class AppServiceProvider extends ServiceProvider
         SubmissionTaskInterface::class   => SubmissionTaskRepository::class,
         BankModuleInterface::class       => BankModuleRepository::class,
         PostTestIdInterface::class       => CourseTestService::class,
+        UserQuizInterface::class         => UserQuizRepository::class,
+        UserCourseTestInterface::class   => UserCourseTestRepository::class,
+        TransactionInterface::class      => TransactionRepository::class,
     ];
 
     /**
