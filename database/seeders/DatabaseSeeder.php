@@ -22,21 +22,16 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             CourseSeeder::class,
-            ContactSeeder::class,
+            // ContactSeeder::class,
+            // HeaderSeeder::class,
+            // SuperiorFeatureSeeder::class,
             // DiscussionSeeder::class,
             // EventSeeder::class,
-            // VoucherSeeder::class,
+            VoucherSeeder::class,
             // RewardSeeder::class,
             // BlogSeeder::class,
-            HeaderSeeder::class,
-            SuperiorFeatureSeeder::class,
-            DiscussionSeeder::class,
-            EventSeeder::class,
-            VoucherSeeder::class,
-            RewardSeeder::class,
-            // BlogSeeder::class,
-            SchoolYearSeeder::class,
-            SOPSeeder::class
+            // SchoolYearSeeder::class,
+            // SOPSeeder::class
             //AuthorStatusSeeder::class,
         ]);
     }
